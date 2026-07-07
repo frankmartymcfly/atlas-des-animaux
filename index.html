@@ -332,9 +332,28 @@
   .status {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 12px; font-weight: 800; padding: 4px 11px; border-radius: 999px;
-    line-height: 1.15; white-space: nowrap;
+    line-height: 1.15; white-space: nowrap; cursor: pointer; border: none;
+    transition: filter .12s, transform .08s;
   }
+  .status:hover { filter: brightness(1.07) saturate(1.05); }
+  .status:active { transform: translateY(1px); }
+  .status:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
   .status .status-dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.85); box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
+  .status .status-info { font-size: 11px; opacity: .8; margin-left: 1px; }
+
+  /* Fenêtre d'info sur le statut de conservation */
+  .status-overlay { z-index: 120; }
+  .status-modal { width: min(460px, 100%); }
+  .status-modal-body { padding: 32px 26px 26px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+  .status-modal-body .si-big { font-size: 15px; padding: 8px 18px; cursor: default; }
+  .status-modal-body .si-big:hover { filter: none; }
+  .si-name { margin: 2px 0 0; font-family: "Poppins", sans-serif; font-size: 23px; font-weight: 800; color: var(--green-dark); }
+  .si-scale { display: flex; gap: 5px; margin-top: 4px; }
+  .si-seg { width: 36px; padding: 7px 0; border-radius: 8px; font-weight: 800; font-size: 12px; opacity: .45; transform: scale(.9); transition: transform .1s; }
+  .si-seg.cur { opacity: 1; transform: scale(1.14); box-shadow: 0 0 0 2px var(--ink); }
+  .si-scale-legend { display: flex; justify-content: space-between; width: 100%; max-width: 285px; font-size: 11px; color: var(--muted); font-weight: 700; margin-top: -6px; }
+  .si-text { font-size: 16px; line-height: 1.6; color: #35433b; margin: 4px 0 0; }
+  .si-foot { font-size: 12.5px; color: var(--muted); font-weight: 700; margin: 2px 0 0; }
   .status-row { margin-top: 2px; }
   .modal-tags .status { font-size: 12.5px; }
   .status-legend { max-width: 800px; margin: 4px auto 0; padding: 0 16px; text-align: center; }
@@ -406,6 +425,14 @@
       <button class="modal-close" id="modalClose" title="Fermer" aria-label="Fermer">✕</button>
       <div class="modal-photo-wrap"><img class="modal-photo" id="modalPhoto" alt="" /></div>
       <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Info sur le statut de conservation -->
+  <div class="modal-overlay status-overlay" id="statusOverlay" hidden>
+    <div class="modal status-modal" role="dialog" aria-modal="true" aria-label="Statut de conservation">
+      <button class="modal-close" id="statusClose" title="Fermer" aria-label="Fermer">✕</button>
+      <div class="status-modal-body" id="statusBody"></div>
     </div>
   </div>
 
@@ -800,8 +827,21 @@ const STATUS_INFO = {
 function statusOf(name){ return (typeof STATUS_MAP !== 'undefined' && STATUS_MAP[name]) || 'NE'; }
 function statusBadge(name){
   const s = STATUS_INFO[statusOf(name)] || STATUS_INFO.NE;
-  return `<span class="status" style="background:${s.bg};color:${s.fg}" title="Statut IUCN : ${escapeHtml(s.label)}"><span class="status-dot"></span>${escapeHtml(s.label)}</span>`;
+  return `<span class="status" role="button" tabindex="0" data-animal="${escapeHtml(name)}" style="background:${s.bg};color:${s.fg}" title="Clique pour en savoir plus sur ce statut"><span class="status-dot"></span>${escapeHtml(s.label)}<span class="status-info">ⓘ</span></span>`;
 }
+// Explication (niveau pré-ado) de chaque catégorie de la Liste rouge UICN.
+const STATUS_MEANING = {
+  EX:"Cette espèce a complètement disparu : il n'en reste plus aucun individu vivant sur Terre.",
+  EW:"Cette espèce n'existe plus du tout dans la nature. Les seuls survivants vivent dans des zoos ou des refuges, qui espèrent un jour la réintroduire dans son milieu.",
+  CR:"C'est le tout dernier niveau avant de disparaître de la nature. Il en reste très, très peu : c'est une urgence, et sans aide cette espèce pourrait s'éteindre bientôt.",
+  EN:"Cette espèce est fortement menacée de disparition. Ses populations ont beaucoup diminué et elle a vraiment besoin d'être protégée.",
+  VU:"Cette espèce est en difficulté : le nombre d'individus baisse et elle risque de devenir « en danger » si rien ne change.",
+  NT:"Cette espèce va encore assez bien, mais elle pourrait devenir menacée bientôt. Les scientifiques la surveillent de près.",
+  LC:"Cette espèce est encore nombreuse et répandue dans la nature. Elle n'est pas menacée pour l'instant — mais protéger son habitat reste important.",
+  DD:"Les scientifiques n'ont pas encore assez d'informations sur cette espèce pour savoir si elle est en danger ou non.",
+  NE:"Cette espèce n'a pas encore été évaluée par les scientifiques de la Liste rouge.",
+  DO:"C'est un animal domestique, élevé par les humains depuis des milliers d'années. Il ne fait pas partie de la Liste rouge, qui concerne les espèces sauvages."
+};
 
 function makeCard(animal) {
   const card = document.createElement('article');
@@ -1168,7 +1208,60 @@ function closeModal() {
 
 modalClose.addEventListener('click', closeModal);
 modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modalOverlay.hidden) closeModal(); });
+
+/* ============================================================
+   INFO STATUT DE CONSERVATION  (popup au clic sur la pastille)
+   ============================================================ */
+const statusOverlay = document.getElementById('statusOverlay');
+const statusClose   = document.getElementById('statusClose');
+const statusBody    = document.getElementById('statusBody');
+const SCALE = ['LC', 'NT', 'VU', 'EN', 'CR', 'EW', 'EX'];
+
+function openStatusInfo(name) {
+  const code = statusOf(name);
+  const s = STATUS_INFO[code] || STATUS_INFO.NE;
+  const onScale = SCALE.includes(code);
+  const scaleHtml = onScale ? `
+    <div class="si-scale">${SCALE.map(c => {
+      const si = STATUS_INFO[c];
+      return `<span class="si-seg${c === code ? ' cur' : ''}" style="background:${si.bg};color:${si.fg}" title="${escapeHtml(si.label)}">${escapeHtml(si.short)}</span>`;
+    }).join('')}</div>
+    <div class="si-scale-legend"><span>🟢 plus sûr</span><span>plus menacé 🔴</span></div>` : '';
+  statusBody.innerHTML = `
+    <span class="status si-big" style="background:${s.bg};color:${s.fg}"><span class="status-dot"></span>${escapeHtml(s.label)}</span>
+    <h3 class="si-name">${escapeHtml(name)}</h3>
+    ${scaleHtml}
+    <p class="si-text">${escapeHtml(STATUS_MEANING[code] || '')}</p>
+    <p class="si-foot">Statut établi par la Liste rouge de l'UICN 🌍</p>
+  `;
+  statusOverlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+function closeStatusInfo() {
+  statusOverlay.hidden = true;
+  if (modalOverlay.hidden) document.body.style.overflow = '';   // garde le blocage si la fiche est ouverte dessous
+}
+statusClose.addEventListener('click', closeStatusInfo);
+statusOverlay.addEventListener('click', (e) => { if (e.target === statusOverlay) closeStatusInfo(); });
+
+// Ouvre le popup au clic (ou Entrée/Espace) sur n'importe quelle pastille de statut.
+document.addEventListener('click', (e) => {
+  const el = e.target.closest && e.target.closest('.status[data-animal]');
+  if (el) { e.stopPropagation(); openStatusInfo(el.dataset.animal); }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    const el = e.target.closest && e.target.closest('.status[data-animal]');
+    if (el) { e.preventDefault(); openStatusInfo(el.dataset.animal); }
+  }
+});
+
+// Échap : ferme d'abord le popup de statut, sinon la fiche agrandie.
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (!statusOverlay.hidden) { closeStatusInfo(); return; }
+  if (!modalOverlay.hidden) closeModal();
+});
 
 buildFilters();
 applyFilters();
