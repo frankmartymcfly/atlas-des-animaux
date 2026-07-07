@@ -142,6 +142,10 @@
   }
   .chip:hover { border-color: var(--green); transform: translateY(-1px); }
   .chip.active { background: var(--green); border-color: var(--green); color: #fff; }
+  .threat-filter { text-align: center; margin-top: 10px; }
+  .threat-chip { border-color: #f0b429; color: #9a6a00; }
+  .threat-chip:hover { border-color: #f4a623; transform: translateY(-1px); }
+  .threat-chip.active { background: #f4a623; border-color: #f4a623; color: #fff; box-shadow: 0 4px 12px rgba(244,166,35,.4); }
 
   /* ---------- Grille ---------- */
   main {
@@ -412,6 +416,9 @@
     <button class="search-clear" id="searchClear" hidden aria-label="Effacer la recherche">✕</button>
   </div>
   <div class="filters" id="filters"></div>
+  <div class="threat-filter">
+    <button id="threatToggle" class="chip threat-chip" aria-pressed="false">⚠️ Menacés seulement</button>
+  </div>
   <p class="results-count" id="resultsCount"></p>
 
   <main id="grid"></main>
@@ -894,6 +901,8 @@ function bannerColor(continent) {
 
 let currentContinent = 'Tous';
 let currentSearch = '';
+let onlyThreatened = false;
+const THREATENED = new Set(['VU', 'EN', 'CR', 'EW', 'EX']);  // catégories « menacées » (+ éteintes)
 const resultsCount = document.getElementById('resultsCount');
 const noResults   = document.getElementById('noResults');
 const searchInput = document.getElementById('search');
@@ -950,6 +959,7 @@ function applyFilters() {
   const needles = searchNeedles(q);
   const list = ANIMALS.filter(a => {
     if (currentContinent !== 'Tous' && a.continent !== currentContinent) return false;
+    if (onlyThreatened && !THREATENED.has(statusOf(a.name))) return false;
     if (!q) return true;
     const hay = norm(a.name + ' ' + a.continent + ' ' + a.where + ' ' + a.diet + ' ' + (STATUS_INFO[statusOf(a.name)] || STATUS_INFO.NE).label);
     return needles.some(nd => nd && hay.includes(nd));
@@ -959,12 +969,12 @@ function applyFilters() {
   if (noResults) noResults.hidden = list.length > 0;
   if (resultsCount) {
     const total = ANIMALS.length;
-    resultsCount.textContent = (q || currentContinent !== 'Tous')
+    resultsCount.textContent = (q || currentContinent !== 'Tous' || onlyThreatened)
       ? `${list.length} ${list.length > 1 ? 'animaux' : 'animal'} sur ${total}`
       : `${total} animaux`;
   }
-  // Carte épurée : bulles de continent par défaut, épingles quand on filtre/cherche.
-  renderMap(list, currentContinent === 'Tous' && !q);
+  // Carte épurée : bulles de continent par défaut, épingles quand on filtre/cherche/menace.
+  renderMap(list, currentContinent === 'Tous' && !q && !onlyThreatened);
 }
 
 function buildFilters() {
@@ -975,7 +985,7 @@ function buildFilters() {
     b.textContent = c === 'Tous' ? '🌏 Tous' : c;
     b.addEventListener('click', () => {
       stopEverything();
-      document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+      filtersEl.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
       currentContinent = c;
       applyFilters();
@@ -997,6 +1007,17 @@ if (searchClear) {
     searchInput.value = '';
     searchClear.hidden = true;
     searchInput.focus();
+    applyFilters();
+  });
+}
+
+const threatToggle = document.getElementById('threatToggle');
+if (threatToggle) {
+  threatToggle.addEventListener('click', () => {
+    stopEverything();
+    onlyThreatened = !onlyThreatened;
+    threatToggle.classList.toggle('active', onlyThreatened);
+    threatToggle.setAttribute('aria-pressed', onlyThreatened ? 'true' : 'false');
     applyFilters();
   });
 }
@@ -1094,7 +1115,7 @@ function spreadPins() {
 function selectContinent(cont) {
   stopEverything();
   currentContinent = cont;
-  document.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === cont));
+  filtersEl.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === cont));
   applyFilters();
   const sec = document.querySelector('.map-section');
   if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1148,9 +1169,11 @@ if (mapBack) {
     stopEverything();
     currentContinent = 'Tous';
     currentSearch = '';
+    onlyThreatened = false;
+    if (threatToggle) { threatToggle.classList.remove('active'); threatToggle.setAttribute('aria-pressed', 'false'); }
     if (searchInput) searchInput.value = '';
     if (searchClear) searchClear.hidden = true;
-    document.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === '🌏 Tous'));
+    filtersEl.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === '🌏 Tous'));
     applyFilters();
     const sec = document.querySelector('.map-section');
     if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
