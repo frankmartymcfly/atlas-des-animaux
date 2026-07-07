@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; media-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'" />
+<title>Atlas des animaux 🐾</title>
+<link rel="stylesheet" href="fonts.css" />
+<style>
+  :root {
+    --green: #2e7d46;
+    --green-dark: #1f5a32;
+    --teal: #12a5a5;
+    --teal-dark: #0e8686;
+    --amber: #f4a623;
+    --ink: #1f2a24;
+    --muted: #6b7a70;
+    --sand: #f3f6ef;
+    --card: #ffffff;
+    --line: #e6ece2;
+    --highlight: #ffe39a;
+    --shadow-sm: 0 2px 10px rgba(20,45,25,.06);
+    --shadow: 0 14px 34px rgba(20,45,25,.10);
+    --shadow-lg: 0 26px 60px rgba(8,25,14,.30);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Nunito", "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--sand);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  h1, h2, h3, .map-title, .section-title { font-family: "Poppins", "Segoe UI", sans-serif; }
+
+  /* ---------- Héros ---------- */
+  .hero {
+    position: relative;
+    min-height: min(58vh, 460px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 70px 20px 84px;
+    color: #fff;
+    overflow: hidden;
+  }
+  .hero .hero-bg {
+    position: absolute; inset: 0;
+    background: url("images/hero.jpg") center 40%/cover no-repeat;
+    transform: scale(1.03);
+    z-index: 0;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, rgba(20,60,35,.55) 0%, rgba(16,45,28,.62) 55%, rgba(243,246,239,.98) 100%);
+  }
+  .hero > * { position: relative; z-index: 2; }
+  .hero .kicker {
+    text-transform: uppercase; letter-spacing: 3px; font-size: 13px; font-weight: 700;
+    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+    padding: 7px 16px; border-radius: 999px; backdrop-filter: blur(4px);
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    margin: 0; font-weight: 800; line-height: 1.08;
+    font-size: clamp(30px, 6vw, 58px);
+    text-shadow: 0 3px 18px rgba(0,0,0,.4);
+    max-width: 14ch;
+  }
+  .hero p {
+    margin: 16px 0 0; font-size: clamp(15px, 2.4vw, 20px);
+    max-width: 44ch; font-weight: 600; text-shadow: 0 2px 10px rgba(0,0,0,.35);
+  }
+  .hero .cta {
+    margin-top: 26px; display: inline-flex; align-items: center; gap: 10px;
+    background: var(--teal); color: #fff; text-decoration: none;
+    font-weight: 800; font-size: 16px; padding: 14px 26px; border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(18,165,165,.45); transition: transform .12s, background .15s;
+  }
+  .hero .cta:hover { background: var(--teal-dark); transform: translateY(-2px); }
+
+  /* ---------- Barre d'outils ---------- */
+  .toolbar {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 4px 18px rgba(20,45,25,.06);
+    padding: 12px 16px;
+    display: flex; flex-wrap: wrap; gap: 12px 22px;
+    align-items: center; justify-content: center;
+  }
+  .toolbar .group {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13.5px; color: var(--muted); font-weight: 700;
+  }
+  select, input[type=range] { font-family: inherit; font-size: 14px; }
+  input[type=range] { accent-color: var(--teal); }
+  select {
+    padding: 8px 10px; border-radius: 10px;
+    border: 1.5px solid var(--line); background: #fff; color: var(--ink);
+    max-width: 240px; font-weight: 600;
+  }
+  select:focus { outline: none; border-color: var(--teal); }
+  .speed-val { min-width: 44px; text-align: center; color: var(--teal-dark); font-weight: 800; }
+  .stop-btn {
+    border: none; background: #eef3ec; color: var(--green-dark);
+    font-weight: 800; padding: 9px 18px; border-radius: 999px; cursor: pointer;
+    transition: background .15s, transform .08s;
+  }
+  .stop-btn:hover { background: #e2ebdf; }
+  .stop-btn:active { transform: translateY(1px); }
+
+  /* ---------- Titres de section ---------- */
+  .section-title {
+    text-align: center; color: var(--green-dark);
+    font-size: clamp(21px, 3.4vw, 30px); font-weight: 800;
+    margin: 46px 16px 4px;
+  }
+  .section-sub {
+    text-align: center; color: var(--muted); font-weight: 600;
+    margin: 0 16px 8px; font-size: 15px;
+  }
+  .section-title .accent { display: block; width: 64px; height: 4px; border-radius: 4px;
+    background: var(--amber); margin: 12px auto 0; }
+
+  /* ---------- Filtres par continent ---------- */
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 9px;
+    justify-content: center; padding: 18px 16px 4px;
+    max-width: 900px; margin: 0 auto;
+  }
+  .chip {
+    border: 1.5px solid var(--line); background: #fff; color: var(--green-dark);
+    font-weight: 800; padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    font-size: 14px; font-family: "Nunito", sans-serif;
+    transition: background .15s, color .15s, border-color .15s, transform .08s;
+  }
+  .chip:hover { border-color: var(--green); transform: translateY(-1px); }
+  .chip.active { background: var(--green); border-color: var(--green); color: #fff; }
+
+  /* ---------- Grille ---------- */
+  main {
+    max-width: 1140px; margin: 0 auto;
+    padding: 18px 16px 40px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .card {
+    background: var(--card); border-radius: 20px; border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm); overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform .18s, box-shadow .18s;
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+  .card:hover .photo { transform: scale(1.06); }
+  .card.reading { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(18,165,165,.35), var(--shadow); }
+
+  .banner { height: 188px; position: relative; overflow: hidden; }
+  .banner .photo {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; z-index: 1; display: block;
+    transition: transform .35s ease;
+  }
+  .banner .emoji-fallback {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 84px; z-index: 0; background: linear-gradient(135deg,#dff3e4,#c7e9d2);
+  }
+  .banner .tag {
+    position: absolute; top: 12px; left: 12px; z-index: 2;
+    background: rgba(255,255,255,.92); color: var(--green-dark);
+    font-size: 12px; font-weight: 800; padding: 5px 11px; border-radius: 999px;
+    letter-spacing: .2px; box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  }
+  .banner .star {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    font-size: 16px; background: var(--amber); color: #fff;
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(244,166,35,.6);
+  }
+  .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 11px; }
+  .body h2 { margin: 0; font-size: 21px; font-weight: 700; color: var(--ink); }
+  .facts { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+  .facts span {
+    background: #eef5ec; color: var(--green-dark);
+    padding: 4px 10px; border-radius: 999px; font-weight: 700;
+  }
+  .text { font-size: 15.5px; color: #3a473f; }
+  .text .w { border-radius: 4px; transition: background .05s; }
+  .text .w.spoken { background: var(--highlight); box-shadow: 0 0 0 2px var(--highlight); }
+
+  .actions { display: flex; gap: 10px; margin-top: 2px; }
+  .read-btn {
+    flex: 1; border: none; background: var(--teal); color: #fff;
+    font-family: "Poppins", sans-serif; font-weight: 700; font-size: 15px;
+    padding: 12px; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 6px 16px rgba(18,165,165,.35);
+    transition: transform .08s, background .15s, box-shadow .15s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .read-btn:hover { background: var(--teal-dark); }
+  .read-btn:active { transform: translateY(2px); box-shadow: 0 3px 10px rgba(18,165,165,.3); }
+  .read-btn.playing { background: var(--green); box-shadow: 0 6px 16px rgba(46,125,70,.4); }
+
+  .card .card-hint { font-size: 11.5px; color: var(--muted); text-align: center; font-weight: 600; }
+
+  footer {
+    text-align: center; color: #dff0e4; background: var(--green-dark);
+    padding: 30px 16px 40px; font-size: 13.5px; font-weight: 600;
+    margin-top: 40px;
+  }
+  footer a { color: #fff; }
+  .no-voice {
+    background: #fff6da; color: #7a5b00; border-bottom: 1px solid #f0e2b5;
+    text-align: center; padding: 11px 14px; font-size: 13.5px; font-weight: 700;
+    display: none; line-height: 1.45;
+  }
+
+  /* ---------- Carte du monde ---------- */
+  .map-section { max-width: 1000px; margin: 6px auto 0; padding: 0 16px; }
+  .map-title { color: var(--green-dark); text-align: center; margin: 0 0 12px; font-size: clamp(17px, 2.6vw, 22px); font-weight: 800; }
+  .map-card { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 16px; box-shadow: var(--shadow-sm); }
+  .map-wrap { position: relative; border-radius: 14px; overflow: hidden; line-height: 0; }
+  .map-stage { position: relative; transform-origin: 0 0; transition: transform .5s ease; will-change: transform; }
+  .map-img { width: 100%; height: auto; display: block; }
+  .map-pins { position: absolute; inset: 0; }
+  .map-back {
+    position: absolute; top: 10px; left: 10px; z-index: 8; border: none; cursor: pointer;
+    background: rgba(255,255,255,.95); color: var(--green-dark); line-height: 1;
+    font-family: "Poppins", sans-serif; font-weight: 800; font-size: 13px;
+    padding: 8px 14px; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  }
+  .map-back:hover { background: #fff; }
+  .map-back[hidden] { display: none; }
+  .pin {
+    position: absolute; transform: translate(-50%, -50%) scale(var(--pin-scale, 1));
+    width: 30px; height: 30px; padding: 0; border: none; cursor: pointer;
+    border-radius: 50%; background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,.5), 0 0 0 2.5px var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; z-index: 2; transition: transform .12s;
+    animation: pinfade .35s ease-out;
+  }
+  @keyframes pinfade { from { opacity: 0; } }
+  .pin:hover, .pin:focus { transform: translate(-50%, -50%) scale(calc(var(--pin-scale, 1) * 1.4)); z-index: 5; outline: none; box-shadow: 0 2px 6px rgba(0,0,0,.5), 0 0 0 2.5px var(--amber); }
+  .pin .pin-label, .cluster .pin-label {
+    position: absolute; bottom: 128%; left: 50%; transform: translateX(-50%);
+    background: var(--green-dark); color: #fff; font-size: 11px; font-weight: 800;
+    padding: 3px 9px; border-radius: 8px; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity .12s;
+  }
+  .pin:hover .pin-label, .pin:focus .pin-label,
+  .cluster:hover .pin-label, .cluster:focus .pin-label { opacity: 1; }
+  @keyframes pindrop { from { opacity: 0; transform: translate(-50%, -180%) scale(.5); } }
+  /* Bulles de continent (vue par défaut, carte épurée) */
+  .cluster {
+    position: absolute; transform: translate(-50%, -50%);
+    min-width: 44px; height: 44px; padding: 0 8px; border: none; cursor: pointer;
+    border-radius: 999px; background: var(--green); color: #fff;
+    box-shadow: 0 3px 12px rgba(0,0,0,.45), 0 0 0 3px #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Poppins", sans-serif; font-weight: 800; font-size: 17px;
+    z-index: 3; transition: transform .12s, background .15s;
+    animation: pindrop .4s ease-out both;
+  }
+  .cluster:hover, .cluster:focus { transform: translate(-50%, -50%) scale(1.12); background: var(--green-dark); z-index: 6; outline: none; }
+
+  /* ---------- Fenêtre agrandie (modale) ---------- */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(12,30,18,.72); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    animation: fadein .18s ease-out;
+  }
+  .modal-overlay[hidden] { display: none; }
+  @keyframes fadein { from { opacity: 0; } }
+  .modal {
+    background: #fff; border-radius: 24px; overflow: hidden;
+    width: min(680px, 100%); max-height: 92vh; display: flex; flex-direction: column;
+    box-shadow: var(--shadow-lg); position: relative;
+    animation: pop .2s ease-out;
+  }
+  @keyframes pop { from { transform: scale(.94); opacity: 0; } }
+  .modal-close {
+    position: absolute; top: 12px; right: 12px; z-index: 3;
+    width: 42px; height: 42px; border-radius: 50%; border: none; cursor: pointer;
+    background: rgba(0,0,0,.5); color: #fff; font-size: 20px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; transition: background .15s;
+  }
+  .modal-close:hover { background: rgba(0,0,0,.78); }
+  .modal-photo-wrap {
+    background: #10251a; display: flex; align-items: center; justify-content: center;
+    max-height: 46vh;
+  }
+  .modal-photo { width: 100%; max-height: 46vh; object-fit: contain; display: block; }
+  .modal-body { padding: 20px 24px 26px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+  .modal-body h2 { margin: 0; font-size: 27px; font-weight: 800; color: var(--green-dark); }
+  .modal-body .text { font-size: 17px; line-height: 1.65; color: #35433b; }
+  .modal-tags { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .modal-tags .mtag {
+    background: var(--teal); color: #fff; font-size: 12px; font-weight: 800;
+    padding: 5px 12px; border-radius: 999px;
+  }
+  /* ---------- Recherche ---------- */
+  .search-wrap { position: relative; max-width: 470px; margin: 8px auto 2px; padding: 0 16px; }
+  .search-icon { position: absolute; left: 32px; top: 50%; transform: translateY(-50%); font-size: 15px; opacity: .55; pointer-events: none; }
+  .search-input {
+    width: 100%; font-family: "Nunito", sans-serif; font-size: 16px; font-weight: 600;
+    padding: 13px 46px; border-radius: 999px; border: 1.5px solid var(--line);
+    background: #fff; color: var(--ink); box-shadow: var(--shadow-sm); outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .search-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(18,165,165,.18); }
+  .search-input::placeholder { color: #9aa89e; font-weight: 600; }
+  .search-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+  .search-clear {
+    position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
+    width: 26px; height: 26px; border-radius: 50%; border: none; cursor: pointer;
+    background: #e6ece2; color: var(--green-dark); font-weight: bold; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .search-clear:hover { background: #d6e0d0; }
+  .results-count { text-align: center; color: var(--muted); font-weight: 700; font-size: 13px; margin: 10px 16px 0; }
+  .no-results { text-align: center; color: var(--muted); font-weight: 700; font-size: 17px; padding: 24px 16px 8px; }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <span class="kicker">🐾 Atlas des animaux</span>
+    <h1>Les animaux extraordinaires du monde</h1>
+    <p>Une grande collection de créatures fascinantes des quatre coins de la planète.</p>
+    <a class="cta" href="#grid">Explorer les animaux ↓</a>
+  </header>
+
+  <h2 class="section-title">🗺️ Explore la carte du monde<span class="accent"></span></h2>
+  <p class="section-sub">Clique sur un continent pour voir ses animaux, puis sur une épingle pour en rencontrer un.</p>
+  <section class="map-section">
+    <div class="map-card">
+      <div class="map-wrap">
+        <div class="map-stage" id="mapStage">
+          <img class="map-img" src="images/world-map.jpg" alt="Carte du monde" />
+          <div class="map-pins" id="mapPins"></div>
+        </div>
+        <button class="map-back" id="mapBack" hidden>↩︎ Carte du monde</button>
+      </div>
+    </div>
+  </section>
+
+  <h2 class="section-title" id="grid-title">🐾 Rencontre les animaux<span class="accent"></span></h2>
+  <p class="section-sub">Cherche un animal ou filtre par continent, puis touche « Lis-moi » ou clique une photo pour l'agrandir.</p>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="search" id="search" class="search-input" autocomplete="off" aria-label="Chercher un animal"
+           placeholder="Chercher un animal… (ex. « lion », « ours », « Afrique »)" />
+    <button class="search-clear" id="searchClear" hidden aria-label="Effacer la recherche">✕</button>
+  </div>
+  <div class="filters" id="filters"></div>
+  <p class="results-count" id="resultsCount"></p>
+
+  <main id="grid"></main>
+  <div class="no-results" id="noResults" hidden>😕 Aucun animal ne correspond à ta recherche.</div>
+
+  <footer>🐾 Atlas des animaux &middot; Une collection à lire et à écouter.<br>Photos et carte&nbsp;: Wikimedia Commons</footer>
+
+  <!-- Fenêtre agrandie -->
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" title="Fermer" aria-label="Fermer">✕</button>
+      <div class="modal-photo-wrap"><img class="modal-photo" id="modalPhoto" alt="" /></div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+<script src="animals-data.js"></script>
+<script src="audio-data.js"></script>
+<script>
+/* ============================================================
+   LES ANIMAUX
+   Ajoute un champ "audio" avec le chemin d'un fichier .mp3/.wav
+   pour utiliser une vraie voix enregistrée à la place de la voix
+   du navigateur. Exemple :  audio: "audio/panda-roux.mp3"
+   ============================================================ */
+const ANIMALS = [
+  {
+    name: "Panda roux",
+    emoji: "🦊",
+    continent: "Asie",
+    where: "Himalaya et Chine",
+    size: "Taille d'un chat",
+    diet: "Bambou",
+    star: true,
+    audio: null,
+    text: "Le panda roux est un petit animal au pelage roux, semblable à celui d'un renard, qui vit tout en haut des forêts de montagne brumeuses de l'est de l'Himalaya et du sud-ouest de la Chine. Même s'il partage son nom avec le panda géant, il n'en est pas du tout un proche parent : il appartient à sa propre famille bien à lui. Le panda roux passe la plus grande partie de la journée à dormir dans les arbres et devient actif aux heures plus fraîches de l'aube et du crépuscule. Il possède une astuce ingénieuse pour garder l'équilibre : un faux pouce, qui est en réalité un petit os du poignet, et qui l'aide à agripper le bambou et les branches. Sa longue queue touffue et rayée lui sert d'écharpe bien chaude qu'il enroule autour de lui pendant les nuits glaciales. Malheureusement, le panda roux est en voie de disparition, car sa forêt est détruite ; protéger ces montagnes est donc le meilleur moyen de l'aider."
+  },
+  {
+    name: "Manchot Adélie",
+    emoji: "🐧",
+    continent: "Antarctique",
+    where: "Côte de l'Antarctique",
+    size: "Environ 70 cm",
+    diet: "Krill et poissons",
+    star: true,
+    audio: null,
+    text: "Le manchot Adélie est l'un des oiseaux les plus résistants de la planète : il vit plus au sud que presque tous les autres animaux, juste sur la côte glacée de l'Antarctique. Il a été nommé d'après la Terre Adélie, une région de l'Antarctique qu'un explorateur français a baptisée du nom de son épouse. Ces manchots sont d'excellents nageurs et peuvent plonger très profond pour attraper de minuscules crustacés appelés krill, ainsi que de petits poissons. Sur la terre ferme, ils construisent leur nid avec de petits cailloux, et le mâle offre parfois un joli galet à la femelle en cadeau. Chaque année, d'immenses colonies se rassemblent : des milliers de manchots se dandinent, glissent sur le ventre et s'appellent bruyamment pour retrouver leur famille. Ils sont faits pour le froid, avec une épaisse couche de graisse et des plumes imperméables qui gardent l'eau glacée à l'extérieur."
+  },
+  {
+    name: "Léopard des neiges",
+    emoji: "🐆",
+    continent: "Asie",
+    where: "Montagnes d'Asie centrale",
+    size: "Jusqu'à 55 kg",
+    diet: "Moutons et chèvres",
+    star: false,
+    audio: null,
+    text: "Le léopard des neiges est un grand félin rare et magnifique qui rôde dans les montagnes escarpées et rocheuses de l'Asie centrale. Son épaisse fourrure gris pâle est couverte de taches sombres en forme de rosettes qui l'aident à se fondre parfaitement dans les falaises enneigées, ce qui le rend très difficile à repérer. Ce félin possède une queue extrêmement longue et touffue qui lui sert à garder l'équilibre lorsqu'il bondit de rocher en rocher, et il peut même l'enrouler autour de son visage comme une couverture. Le léopard des neiges est un champion du saut : il peut franchir la longueur d'un autobus scolaire d'un seul bond. Comme il vit dans des endroits si isolés et glacés et qu'il est très timide, on le surnomme parfois le fantôme des montagnes."
+  },
+  {
+    name: "Axolotl",
+    emoji: "🦎",
+    continent: "Amérique du Nord",
+    where: "Lacs près de Mexico",
+    size: "Environ 25 cm",
+    diet: "Vers et insectes",
+    star: false,
+    audio: null,
+    text: "L'axolotl est une salamandre extraordinaire qui ne grandit jamais vraiment. La plupart des amphibiens perdent leurs branchies et quittent l'eau une fois adultes, mais l'axolotl garde ses branchies roses et plumeuses et reste dans l'eau toute sa vie. Il possède l'un des super-pouvoirs les plus incroyables du règne animal : s'il perd une patte, sa queue, ou même une partie de son cœur ou de son cerveau, il peut les faire repousser comme si de rien n'était. L'axolotl vient de quelques lacs près de Mexico et il est aujourd'hui en danger critique d'extinction dans la nature. Les scientifiques l'étudient de près, en espérant que ses pouvoirs de guérison nous apprendront un jour à mieux soigner les blessures humaines."
+  },
+  {
+    name: "Fennec",
+    emoji: "🦊",
+    continent: "Afrique",
+    where: "Désert du Sahara",
+    size: "Le plus petit renard",
+    diet: "Insectes et plantes",
+    star: false,
+    audio: null,
+    text: "Le fennec est le plus petit renard du monde, mais il possède les plus grandes oreilles par rapport à son corps de tous les animaux de la famille des chiens. Ces oreilles géantes remplissent deux tâches importantes dans son habitat désertique du Sahara. D'abord, elles l'aident à entendre les insectes et les petits animaux qui se déplacent sous le sable pendant la nuit. Ensuite, elles évacuent la chaleur pour garder le fennec au frais durant les journées brûlantes. Le fennec a aussi des pattes couvertes de poils qui font office de raquettes et lui permettent de courir sur le sable brûlant sans se blesser. Il creuse des terriers frais sous la terre et peut se passer de boire très longtemps, car il tire la plus grande partie de son eau de la nourriture qu'il mange."
+  },
+  {
+    name: "Kangourou roux",
+    emoji: "🦘",
+    continent: "Océanie",
+    where: "Outback australien",
+    size: "Jusqu'à 1,8 m de haut",
+    diet: "Herbe",
+    star: false,
+    audio: null,
+    text: "Le kangourou roux est le plus grand marsupial du monde et un véritable symbole de l'outback australien. Au lieu de courir, il rebondit sur ses deux puissantes pattes arrière, parcourant de grandes distances à chaque bond et atteignant une vitesse plus rapide qu'une voiture près d'une école. Sa grosse queue lui sert de troisième patte : elle l'aide à garder l'équilibre et même à se propulser. Comme les autres marsupiaux, la maman kangourou transporte son minuscule bébé, appelé un « joey », dans une poche douillette sur son ventre jusqu'à ce qu'il soit assez grand pour sauter tout seul. Le kangourou est fait pour les endroits secs et chauds et peut ralentir son corps pour survivre aux longues sécheresses."
+  },
+  {
+    name: "Toucan toco",
+    emoji: "🦜",
+    continent: "Amérique du Sud",
+    where: "Forêts du Brésil",
+    size: "Bec jusqu'à 20 cm",
+    diet: "Fruits",
+    star: false,
+    audio: null,
+    text: "Le toucan toco est célèbre pour son énorme bec orange et coloré, qui peut être presque aussi long que son corps. On pourrait croire qu'un si grand bec est très lourd, mais il est en réalité très léger, car il est rempli de poches d'air et d'une matière spongieuse. Le bec aide le toucan à attraper les fruits sur des branches trop fines pour supporter son poids, et il évacue aussi la chaleur pour garder l'oiseau au frais dans la forêt tropicale d'Amérique du Sud. Les toucans vivent en petits groupes bruyants et se lancent la nourriture d'un coup de tête. Pour dormir, ils replient leur bec sur leur dos et le glissent sous les plumes de leur queue, comme sous une couverture douillette."
+  },
+  {
+    name: "Renard arctique",
+    emoji: "🦊",
+    continent: "Arctique",
+    where: "Toundra du Grand Nord",
+    size: "Taille d'un chat",
+    diet: "Lemmings et oiseaux",
+    star: false,
+    audio: null,
+    text: "Le renard arctique est un petit animal robuste qui survit dans certains des endroits les plus froids de la planète, tout en haut dans la toundra gelée du Nord. Il possède l'un des pelages les plus chauds de tous les animaux, si épais qu'il peut faire la sieste tranquillement par des températures bien en dessous de zéro. Ce renard est un maître du déguisement : en hiver, sa fourrure devient blanche comme la neige pour se cacher dans la glace, et en été, elle devient brune ou grise pour se fondre parmi les rochers et les plantes. Le renard arctique a de petites oreilles et de courtes pattes, ce qui l'aide à perdre moins de chaleur. Quand la nourriture se fait rare, il suit les ours polaires sur la banquise et mange les restes de leurs repas."
+  },
+  {
+    name: "Panda géant",
+    emoji: "🐼",
+    continent: "Asie",
+    where: "Forêts de bambou de Chine",
+    size: "Jusqu'à 150 kg",
+    diet: "Bambou",
+    star: false,
+    audio: null,
+    text: "Le panda géant est un grand ours noir et blanc qui vit dans les forêts de bambou fraîches et humides du centre de la Chine. Même s'il est un ours et qu'il pourrait manger de la viande, le panda géant passe presque toute sa journée — jusqu'à douze heures — à grignoter du bambou. Comme le bambou n'est pas très nourrissant, le panda doit en manger une énorme quantité, parfois plus de dix kilos par jour. Tout comme le panda roux, il possède un os du poignet particulier qui fonctionne comme un pouce pour saisir les tiges de bambou. Les bébés pandas sont incroyablement minuscules à la naissance, à peu près de la taille d'une plaquette de beurre, et pourtant ils deviennent des géants. Grâce à des années de protection attentive, le nombre de pandas géants a lentement recommencé à augmenter."
+  },
+  {
+    name: "Paresseux à trois doigts",
+    emoji: "🦥",
+    continent: "Amérique du Sud",
+    where: "Jungles d'Amérique centrale et du Sud",
+    size: "Environ 60 cm",
+    diet: "Feuilles",
+    star: false,
+    audio: null,
+    text: "Le paresseux à trois doigts est célèbre pour être l'un des animaux les plus lents du monde, et il en est très fier. Il passe presque toute sa vie suspendu à l'envers dans les arbres de la forêt tropicale, en bougeant si doucement que des algues vertes poussent réellement dans sa fourrure, ce qui lui donne un pelage mousseux qui l'aide à se cacher des prédateurs. Son repas de feuilles met très longtemps à être digéré, ce qui explique en partie pourquoi il bouge si lentement et dort de nombreuses heures chaque jour. Étonnamment, ce champion de la lenteur des arbres est un excellent nageur : il se laisse tomber dans les rivières et les traverse à la nage quand il en a besoin. Il ne descend au sol qu'environ une fois par semaine."
+  },
+  {
+    name: "Narval",
+    emoji: "🐳",
+    continent: "Arctique",
+    where: "Océan Arctique",
+    size: "Jusqu'à 5 m de long",
+    diet: "Poissons et calmars",
+    star: false,
+    audio: null,
+    text: "Le narval est une baleine de taille moyenne qui vit dans les eaux glacées de l'océan Arctique, et on l'appelle souvent la licorne des mers. Le narval mâle possède une longue défense droite et torsadée qui peut atteindre trois mètres de long. Cette défense n'est pas vraiment une corne : c'est en réalité une dent géante qui sort à travers la lèvre de l'animal. Les scientifiques pensent que cette défense est remplie de nerfs très sensibles qui aident le narval à percevoir les changements dans l'eau autour de lui. Les narvals plongent incroyablement profond pour chasser les poissons et les calmars sous la glace, et ils voyagent en groupes, remplissant l'eau froide de clics et de sifflements pour s'appeler les uns les autres."
+  },
+  {
+    name: "Okapi",
+    emoji: "🦓",
+    continent: "Afrique",
+    where: "Forêt du Congo",
+    size: "Environ 1,5 m de haut",
+    diet: "Feuilles et fruits",
+    star: false,
+    audio: null,
+    text: "L'okapi ressemble à un mélange de plusieurs animaux : il a les pattes rayées d'un zèbre, le corps d'un cheval, et le long cou et le visage d'une girafe. D'ailleurs, la girafe est son plus proche parent. L'okapi vit au cœur des épaisses forêts tropicales du Congo, en Afrique centrale, et il est si timide et si bien caché que les scientifiques ne l'ont officiellement découvert qu'en mille neuf cent un. Son pelage foncé et velouté est un peu huileux, ce qui aide la pluie à glisser dessus dans la jungle humide. L'okapi possède une étonnante langue d'un noir violacé, si longue qu'il peut s'en servir pour nettoyer ses propres yeux et ses oreilles. Ces rayures de zèbre aident les bébés okapis à suivre leur mère à travers la forêt sombre."
+  }
+];
+
+/* Photos locales (téléchargées depuis Wikimedia Commons). */
+const PHOTOS = {
+  "Panda roux": "images/panda-roux.jpg",
+  "Manchot Adélie": "images/manchot-adelie.jpg",
+  "Léopard des neiges": "images/leopard-des-neiges.jpg",
+  "Axolotl": "images/axolotl.jpg",
+  "Fennec": "images/fennec.jpg",
+  "Kangourou roux": "images/kangourou-roux.jpg",
+  "Toucan toco": "images/toucan-toco.jpg",
+  "Renard arctique": "images/renard-arctique.jpg",
+  "Panda géant": "images/panda-geant.jpg",
+  "Paresseux à trois doigts": "images/paresseux.jpg",
+  "Narval": "images/narval.jpg",
+  "Okapi": "images/okapi.jpg"
+};
+
+/* Coordonnées géographiques (latitude, longitude) pour la carte du monde. */
+const COORDS = {
+  "Panda roux":              { lat: 27.7,  lon: 88.0  },
+  "Manchot Adélie":          { lat: -66.5, lon: 140.0 },
+  "Léopard des neiges":      { lat: 39.0,  lon: 74.0  },
+  "Axolotl":                 { lat: 19.4,  lon: -99.1 },
+  "Fennec":                  { lat: 23.0,  lon: 12.0  },
+  "Kangourou roux":          { lat: -25.0, lon: 133.0 },
+  "Toucan toco":             { lat: -10.0, lon: -55.0 },
+  "Renard arctique":         { lat: 71.0,  lon: -95.0 },
+  "Panda géant":             { lat: 30.7,  lon: 103.0 },
+  "Paresseux à trois doigts":{ lat: 3.0,   lon: -73.0 },
+  "Narval":                  { lat: 76.0,  lon: -70.0 },
+  "Okapi":                   { lat: 1.0,   lon: 25.0  }
+};
+
+/* Fusionne les animaux des zoos (fichier animals-data.js) avec la liste. */
+if (typeof EXTRA_ANIMALS !== 'undefined') ANIMALS.push(...EXTRA_ANIMALS);
+if (typeof EXTRA_PHOTOS !== 'undefined') Object.assign(PHOTOS, EXTRA_PHOTOS);
+if (typeof EXTRA_COORDS !== 'undefined') Object.assign(COORDS, EXTRA_COORDS);
+
+/* ============================================================
+   MOTEUR DE VOIX  (Web Speech API — voix Sylvie par défaut)
+   ============================================================ */
+const synth = window.speechSynthesis;
+let voices = [];
+let chosenVoice = null;
+
+// Les contrôles audio (sélecteur de voix, vitesse, arrêt) ont été retirés
+// de l'interface pour garder le focus sur la collection d'animaux.
+// La lecture utilise la meilleure voix disponible et une vitesse fixe.
+const voiceSelect = document.getElementById('voiceSelect'); // peut être null
+const noVoiceMsg  = document.getElementById('noVoice');     // peut être null
+const READ_RATE   = 0.95;                                   // vitesse de lecture
+
+// Une voix est « naturelle » (humaine, neuronale) si son nom l'indique.
+// Ce sont les voix « Online (Natural) » de Microsoft (Edge), les voix
+// Siri/Premium/Enhanced d'Apple, et les voix réseau de Google — la même
+// famille que la voix canadienne « Sylvie » du projet système solaire.
+const NATURAL_HINTS = ['natural', 'neural', 'online', 'premium', 'enhanced', 'siri'];
+// Voix françaises neuronales préférées, la meilleure en premier.
+// Sylvie (Canada) d'abord, puis les autres voix Naturelles françaises.
+const PREFERRED = ['sylvie', 'antoine', 'jean', 'denise', 'vivienne', 'eloise', 'henri', 'thierry', 'google français'];
+
+function isNatural(v) {
+  const n = v.name.toLowerCase();
+  if (NATURAL_HINTS.some(h => n.includes(h))) return true;
+  if (n.includes('google')) return true;       // voix réseau de Google : correctes
+  if (v.localService === false) return true;    // voix diffusée = presque toujours neuronale
+  return false;
+}
+
+function scoreVoice(v) {
+  const n = v.name.toLowerCase();
+  let s = 0;
+  if (isNatural(v)) s += 100;                                   // le naturel prime sur tout
+  const rank = PREFERRED.findIndex(p => n.includes(p));
+  if (rank !== -1) s += (PREFERRED.length - rank) * 6;          // préférer les voix nommées
+  if (/fr[-_]ca/i.test(v.lang)) s += 6;                         // français canadien en priorité
+  if (/fr[-_]fr/i.test(v.lang)) s += 3;
+  return s;
+}
+
+function loadVoices() {
+  voices = synth.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith('fr'));
+  if (!voices.length) voices = synth.getVoices();   // repli : toutes les voix
+  if (!voices.length) return;
+
+  voices.sort((a,b) => scoreVoice(b) - scoreVoice(a));
+
+  // Choisir la meilleure voix (la mieux notée : Sylvie si disponible).
+  chosenVoice = voices[0];
+
+  // Menu de voix optionnel (présent seulement si le sélecteur existe).
+  if (voiceSelect) {
+    voiceSelect.innerHTML = '';
+    const naturalGroup = document.createElement('optgroup');
+    naturalGroup.label = '🧑 Voix naturelles (recommandé)';
+    const roboticGroup = document.createElement('optgroup');
+    roboticGroup.label = '🤖 Voix de base';
+    voices.forEach((v, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      const pretty = v.name.replace(/Microsoft |Online |\(Natural\)/g, '').trim();
+      opt.textContent = `${pretty} — ${v.lang}`;
+      (isNatural(v) ? naturalGroup : roboticGroup).appendChild(opt);
+    });
+    if (naturalGroup.children.length) voiceSelect.appendChild(naturalGroup);
+    if (roboticGroup.children.length) voiceSelect.appendChild(roboticGroup);
+    voiceSelect.value = 0;
+  }
+
+  if (noVoiceMsg) {
+    const haveNatural = voices.some(isNatural);
+    noVoiceMsg.style.display = haveNatural ? 'none' : 'block';
+  }
+}
+
+loadVoices();
+if (typeof synth.onvoiceschanged !== 'undefined') {
+  synth.onvoiceschanged = loadVoices;
+}
+
+if (voiceSelect) {
+  voiceSelect.addEventListener('change', () => {
+    chosenVoice = voices[+voiceSelect.value] || voices[0];
+  });
+}
+
+/* ============================================================
+   LECTURE  (surligne les mots à mesure qu'ils sont lus)
+   ============================================================ */
+let currentCard = null;
+let currentAudio = null;   // pour les fichiers audio enregistrés
+
+function clearReadingState() {
+  document.querySelectorAll('.reading').forEach(c => c.classList.remove('reading'));
+  document.querySelectorAll('.read-btn.playing').forEach(b => {
+    b.classList.remove('playing');
+    b.innerHTML = '🔊 Lis-moi';
+  });
+  document.querySelectorAll('.w.spoken').forEach(w => w.classList.remove('spoken'));
+  currentCard = null;
+}
+
+function stopEverything() {
+  synth.cancel();
+  if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; currentAudio = null; }
+  clearReadingState();
+}
+
+function readAnimal(animal, card) {
+  const btn = card.querySelector('.read-btn');
+  const isThisPlaying = card.classList.contains('reading');
+
+  stopEverything();
+  if (isThisPlaying) return;  // recliquer = arrêter
+
+  card.classList.add('reading');
+  btn.classList.add('playing');
+  btn.innerHTML = '⏸ Arrêter';
+  currentCard = card;
+
+  // 1) Voix enregistrée (Amélie, ElevenLabs) : prioritaire si disponible.
+  const audioSrc = safeUrl(animal.audio || (typeof AUDIO_MAP !== 'undefined' ? AUDIO_MAP[animal.name] : null));
+  if (audioSrc) {
+    const audio = new Audio(audioSrc);
+    currentAudio = audio;                 // vitesse naturelle (pas de READ_RATE sur l'audio réel)
+    audio.onended = clearReadingState;
+    audio.onerror = () => { currentAudio = null; speakText(animal, card); }; // repli sur la voix du navigateur
+    audio.play().catch(() => { currentAudio = null; speakText(animal, card); });
+    return;
+  }
+
+  // 2) Sinon, utiliser la voix du navigateur (synthèse).
+  speakText(animal, card);
+}
+
+function speakText(animal, card) {
+  if (!synth) return;
+  const textEl = card.querySelector('.text');
+  const wordEls = textEl.querySelectorAll('.w');
+
+  const utter = new SpeechSynthesisUtterance(animal.text);
+  if (chosenVoice) utter.voice = chosenVoice;
+  utter.lang = (chosenVoice && chosenVoice.lang) || 'fr-CA';
+  utter.rate = READ_RATE;
+  utter.pitch = 1.0;
+
+  // Surligne les mots grâce aux événements « boundary ».
+  utter.onboundary = (e) => {
+    if (e.name && e.name !== 'word') return;
+    const idx = e.charIndex;
+    let target = null;
+    wordEls.forEach(w => {
+      const start = +w.dataset.start;
+      const end = +w.dataset.end;
+      if (idx >= start && idx < end) target = w;
+    });
+    if (target) {
+      wordEls.forEach(w => w.classList.remove('spoken'));
+      target.classList.add('spoken');
+      target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  };
+  utter.onend = clearReadingState;
+  utter.onerror = clearReadingState;
+
+  synth.speak(utter);
+}
+
+/* ============================================================
+   CONSTRUCTION DE LA PAGE
+   ============================================================ */
+const grid = document.getElementById('grid');
+const filtersEl = document.getElementById('filters');
+
+// Entoure chaque mot d'un <span> en notant sa position pour le surlignage.
+function buildWordSpans(text) {
+  let html = '';
+  const re = /\S+/g;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const word = m[0];
+    const start = m.index;
+    const end = start + word.length;
+    html += `<span class="w" data-start="${start}" data-end="${end}">${escapeHtml(word)}</span> `;
+  }
+  return html;
+}
+function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+// N'autorise que des chemins relatifs / https pour les photos et l'audio (bloque javascript:, data:, vbscript:).
+function safeUrl(u){ u=String(u==null?'':u); return /^\s*(javascript|data|vbscript):/i.test(u)?'':u; }
+
+function makeCard(animal) {
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.dataset.continent = animal.continent;
+
+  card.innerHTML = `
+    <div class="banner" style="background:${bannerColor(animal.continent)};cursor:pointer" title="Clique pour agrandir">
+      <span class="emoji-fallback">${escapeHtml(animal.emoji)}</span>
+      <img class="photo" src="${escapeHtml(safeUrl(animal.photo || PHOTOS[animal.name] || ''))}" alt="Photo : ${escapeHtml(animal.name)}" loading="lazy"
+           onerror="this.style.display='none';" />
+      <span class="tag">🌍 ${escapeHtml(animal.continent)}</span>
+      ${animal.star ? '<span class="star" title="Coup de cœur !">⭐</span>' : ''}
+    </div>
+    <div class="body">
+      <h2>${escapeHtml(animal.emoji)} ${escapeHtml(animal.name)}</h2>
+      <div class="facts">
+        <span>📍 ${escapeHtml(animal.where)}</span>
+        <span>📏 ${escapeHtml(animal.size)}</span>
+        <span>🍽️ ${escapeHtml(animal.diet)}</span>
+      </div>
+      <p class="text">${buildWordSpans(animal.text)}</p>
+      <div class="actions">
+        <button class="read-btn">🔊 Lis-moi</button>
+      </div>
+      <div class="card-hint">🔍 Clique sur la photo pour l'agrandir</div>
+    </div>
+  `;
+  card.querySelector('.read-btn').addEventListener('click', (e) => { e.stopPropagation(); readAnimal(animal, card); });
+  card.querySelector('.banner').addEventListener('click', () => openModal(animal));
+  return card;
+}
+
+function bannerColor(continent) {
+  const map = {
+    'Asie': 'linear-gradient(135deg,#f6d365,#fda085)',
+    'Antarctique': 'linear-gradient(135deg,#a1c4fd,#c2e9fb)',
+    'Afrique': 'linear-gradient(135deg,#f7971e,#ffd200)',
+    'Australie': 'linear-gradient(135deg,#ff9966,#ff5e62)',
+    'Océanie': 'linear-gradient(135deg,#ff9966,#ff5e62)',
+    'Amérique du Sud': 'linear-gradient(135deg,#56ab2f,#a8e063)',
+    'Amérique du Nord': 'linear-gradient(135deg,#43cea2,#185a9d)',
+    'Arctique': 'linear-gradient(135deg,#e0eafc,#cfdef3)',
+    'Europe': 'linear-gradient(135deg,#b6c88a,#7aa05a)',
+    'Océans': 'linear-gradient(135deg,#2193b0,#6dd5ed)'
+  };
+  return map[continent] || 'linear-gradient(135deg,#89f7fe,#66a6ff)';
+}
+
+let currentContinent = 'Tous';
+let currentSearch = '';
+const resultsCount = document.getElementById('resultsCount');
+const noResults   = document.getElementById('noResults');
+const searchInput = document.getElementById('search');
+const searchClear = document.getElementById('searchClear');
+
+// Enlève les accents pour une recherche tolérante (« leopard » trouve « Léopard »).
+function norm(s) { return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+
+// Synonymes : mots courants ou anglais -> termes qui apparaissent dans les fiches.
+// Valeurs sans accents et en minuscules (comme la recherche normalisée).
+const SYNONYMS = {
+  'pingouin':'manchot', 'penguin':'manchot',
+  'baleine':'narval', 'whale':'narval', 'dauphin':'narval',
+  'ours polaire':'ours blanc', 'polar bear':'ours blanc', 'bear':'ours',
+  'singe':'macaque mandrill gelada colobe lemur gorille callimico',
+  'monkey':'macaque mandrill gelada colobe lemur gorille callimico', 'ape':'gorille mandrill',
+  'loup':'loup', 'wolf':'loup',
+  'renard':'renard fennec', 'fox':'renard fennec',
+  'chat':'lion tigre leopard couguar lynx ocelot jaguar',
+  'felin':'lion tigre leopard couguar lynx ocelot jaguar',
+  'cat':'lion tigre leopard couguar lynx ocelot jaguar',
+  'requin':'requin', 'shark':'requin',
+  'serpent':'python anaconda couleuvre', 'snake':'python anaconda couleuvre',
+  'grenouille':'grenouille', 'frog':'grenouille',
+  'tortue':'tortue', 'turtle':'tortue',
+  'oiseau':'grue oie cygne canard harfang buse pygargue urubu corbeau heron flamant emeu autruche marabout condor dindon toucan loriquet bihoreau butor cheveche tadorne',
+  'oiseaux':'grue oie cygne canard harfang buse pygargue urubu corbeau heron flamant emeu autruche marabout condor dindon toucan loriquet bihoreau butor cheveche tadorne',
+  'bird':'grue oie cygne canard harfang buse pygargue urubu corbeau heron flamant emeu autruche marabout condor dindon toucan loriquet bihoreau butor cheveche tadorne',
+  'hibou':'harfang cheveche', 'chouette':'harfang cheveche', 'owl':'harfang cheveche',
+  'aigle':'pygargue', 'eagle':'pygargue',
+  'cerf':'cerf orignal wapiti caribou', 'deer':'cerf orignal wapiti caribou',
+  'chevre':'chevre bouquetin mouflon thar', 'goat':'chevre bouquetin mouflon thar',
+  'chameau':'chameau', 'camel':'chameau',
+  'chauve-souris':'renard volant', 'chauve souris':'renard volant', 'bat':'renard volant',
+  'castor':'castor', 'beaver':'castor',
+  'crocodile':'alligator', 'hippo':'hippopotame', 'rhino':'rhinoceros',
+  'zebre':'zebre', 'zebra':'zebre',
+  'lezard':'axolotl', 'salamandre':'axolotl',
+  'seahorse':'hippocampe',
+  'tiger':'tigre', 'giraffe':'girafe',
+  'kangourou':'kangourou wallaby', 'kangaroo':'kangourou wallaby'
+};
+
+// Termes à chercher : la requête + les synonymes qu'elle contient.
+function searchNeedles(q) {
+  const needles = q ? [q] : [];
+  for (const key in SYNONYMS) { if (q.includes(key)) SYNONYMS[key].split(' ').forEach(t => needles.push(t)); }
+  return needles;
+}
+
+// Applique à la fois le filtre par continent ET la recherche texte, puis met à jour la carte.
+function applyFilters() {
+  const q = norm(currentSearch.trim());
+  const needles = searchNeedles(q);
+  const list = ANIMALS.filter(a => {
+    if (currentContinent !== 'Tous' && a.continent !== currentContinent) return false;
+    if (!q) return true;
+    const hay = norm(a.name + ' ' + a.continent + ' ' + a.where + ' ' + a.diet);
+    return needles.some(nd => nd && hay.includes(nd));
+  });
+  grid.innerHTML = '';
+  list.forEach(a => grid.appendChild(makeCard(a)));
+  if (noResults) noResults.hidden = list.length > 0;
+  if (resultsCount) {
+    const total = ANIMALS.length;
+    resultsCount.textContent = (q || currentContinent !== 'Tous')
+      ? `${list.length} ${list.length > 1 ? 'animaux' : 'animal'} sur ${total}`
+      : `${total} animaux`;
+  }
+  // Carte épurée : bulles de continent par défaut, épingles quand on filtre/cherche.
+  renderMap(list, currentContinent === 'Tous' && !q);
+}
+
+function buildFilters() {
+  const continents = ['Tous', ...Array.from(new Set(ANIMALS.map(a => a.continent)))];
+  continents.forEach((c, i) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (i === 0 ? ' active' : '');
+    b.textContent = c === 'Tous' ? '🌏 Tous' : c;
+    b.addEventListener('click', () => {
+      stopEverything();
+      document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      currentContinent = c;
+      applyFilters();
+    });
+    filtersEl.appendChild(b);
+  });
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    currentSearch = searchInput.value;
+    if (searchClear) searchClear.hidden = !currentSearch;
+    applyFilters();
+  });
+}
+if (searchClear) {
+  searchClear.addEventListener('click', () => {
+    currentSearch = '';
+    searchInput.value = '';
+    searchClear.hidden = true;
+    searchInput.focus();
+    applyFilters();
+  });
+}
+
+/* ============================================================
+   CARTE DU MONDE  (épurée : bulles de continent, puis épingles)
+   ============================================================ */
+const mapPins  = document.getElementById('mapPins');
+const mapStage = document.getElementById('mapStage');
+const mapBack  = document.getElementById('mapBack');
+const mapWrap  = document.querySelector('.map-wrap');
+let currentMapScale = 1;   // échelle de zoom courante de la carte
+
+// Position représentative de chaque continent (lat, lon) pour les bulles.
+const CONTINENT_POS = {
+  'Afrique': { lat: 3, lon: 22 }, 'Asie': { lat: 46, lon: 95 },
+  'Amérique du Nord': { lat: 46, lon: -100 }, 'Amérique du Sud': { lat: -12, lon: -60 },
+  'Océanie': { lat: -25, lon: 134 }, 'Europe': { lat: 50, lon: 14 },
+  'Arctique': { lat: 80, lon: -45 }, 'Antarctique': { lat: -78, lon: 35 },
+  'Océans': { lat: -6, lon: 150 }
+};
+function coordToXY(lat, lon) { return { x: (lon + 180) / 360 * 100, y: (90 - lat) / 180 * 100 }; }
+
+// Zoom de la carte : échelle S centrée sur la fraction (fcx, fcy), image gardée couvrante,
+// et les épingles sont contre-échelonnées (var --pin-scale) pour rester nettes.
+function setMapTransform(S, fcx, fcy) {
+  currentMapScale = S;
+  if (!mapStage) return;
+  let tx = 0.5 - S * fcx; tx = Math.min(0, Math.max(1 - S, tx));
+  let ty = 0.5 - S * fcy; ty = Math.min(0, Math.max(1 - S, ty));
+  mapStage.style.transform = `translate(${(tx * 100).toFixed(3)}%, ${(ty * 100).toFixed(3)}%) scale(${S.toFixed(3)})`;
+  if (mapPins) mapPins.style.setProperty('--pin-scale', (1 / S).toFixed(3));
+}
+
+// Cadre un ensemble d'animaux (leurs épingles) en calculant leur boîte englobante.
+function zoomToAnimals(list) {
+  const pts = [];
+  list.forEach(a => { const c = COORDS[a.name]; if (c) pts.push({ fx: (c.lon + 180) / 360, fy: (90 - c.lat) / 180 }); });
+  if (!pts.length) { setMapTransform(1, 0.5, 0.5); return; }
+  let minx = 1, maxx = 0, miny = 1, maxy = 0;
+  pts.forEach(p => { minx = Math.min(minx, p.fx); maxx = Math.max(maxx, p.fx); miny = Math.min(miny, p.fy); maxy = Math.max(maxy, p.fy); });
+  const pad = 0.04;
+  minx = Math.max(0, minx - pad); maxx = Math.min(1, maxx + pad);
+  miny = Math.max(0, miny - pad); maxy = Math.min(1, maxy + pad);
+  const w = Math.max(0.06, maxx - minx), h = Math.max(0.06, maxy - miny);
+  let S = Math.min(1 / w, 1 / h);
+  S = Math.max(1.1, Math.min(S, 4.2));
+  setMapTransform(S, (minx + maxx) / 2, (miny + maxy) / 2);
+}
+
+// Écarte les épingles qui se chevauchent (relaxation par collisions), tout en
+// gardant chacune près de sa vraie position. Tient compte du zoom et du ratio 2:1.
+function spreadPins() {
+  if (!mapWrap || !mapPins) return;
+  const Vw = mapWrap.clientWidth;
+  if (!Vw) return;
+  const pins = Array.from(mapPins.querySelectorAll('.pin'));
+  if (pins.length < 2) return;
+  const S = currentMapScale || 1;
+  const r = 37 / (S * Vw);                // séparation min en px (épingle + anneau), en fraction de largeur
+  // Espace isotrope : v = by/2 car la hauteur = largeur/2 (projection équirectangulaire).
+  const nodes = pins.map((p, i) => ({
+    el: p,
+    u: parseFloat(p.dataset.bx) + ((i % 7) - 3) * 1e-4,   // léger décalage pour briser les empilements
+    v: parseFloat(p.dataset.by) / 2 + ((i % 5) - 2) * 1e-4
+  }));
+  for (let iter = 0; iter < 200; iter++) {
+    let moved = false;
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        let dx = b.u - a.u, dy = b.v - a.v;
+        let dist = Math.hypot(dx, dy);
+        if (dist === 0) { dx = r * 0.5; dy = 0; dist = r * 0.5; }
+        if (dist < r) {
+          const push = (r - dist) / 2;
+          dx /= dist; dy /= dist;
+          a.u -= dx * push; a.v -= dy * push;
+          b.u += dx * push; b.v += dy * push;
+          moved = true;
+        }
+      }
+    }
+    if (!moved) break;
+  }
+  nodes.forEach(n => {
+    const bx = Math.min(1, Math.max(0, n.u));
+    const by = Math.min(1, Math.max(0, n.v * 2));
+    n.el.style.left = (bx * 100).toFixed(3) + '%';
+    n.el.style.top = (by * 100).toFixed(3) + '%';
+  });
+}
+
+// Clic sur une bulle : filtre vers ce continent (active la pastille correspondante).
+function selectContinent(cont) {
+  stopEverything();
+  currentContinent = cont;
+  document.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === cont));
+  applyFilters();
+  const sec = document.querySelector('.map-section');
+  if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Bulles de continent (vue par défaut) OU épingles individuelles (quand on filtre/cherche).
+function renderMap(list, clusterMode) {
+  if (!mapPins) return;
+  mapPins.innerHTML = '';
+  if (clusterMode) {
+    setMapTransform(1, 0.5, 0.5);
+    if (mapBack) mapBack.hidden = true;
+    const groups = {};
+    ANIMALS.forEach(a => { (groups[a.continent] = groups[a.continent] || []).push(a); });
+    Object.keys(groups).forEach(cont => {
+      const pos = CONTINENT_POS[cont] || { lat: 0, lon: 0 };
+      const { x, y } = coordToXY(pos.lat, pos.lon);
+      const b = document.createElement('button');
+      b.className = 'cluster';
+      b.style.left = x + '%'; b.style.top = y + '%';
+      b.title = cont + ' — ' + groups[cont].length + (groups[cont].length > 1 ? ' animaux' : ' animal');
+      b.setAttribute('aria-label', b.title);
+      b.innerHTML = `<span>${groups[cont].length}</span><span class="pin-label">${escapeHtml(cont)}</span>`;
+      b.addEventListener('click', () => selectContinent(cont));
+      mapPins.appendChild(b);
+    });
+  } else {
+    if (mapBack) mapBack.hidden = false;
+    list.forEach(a => {
+      const c = COORDS[a.name];
+      if (!c) return;
+      const { x, y } = coordToXY(c.lat, c.lon);
+      const pin = document.createElement('button');
+      pin.className = 'pin';
+      pin.style.left = x + '%'; pin.style.top = y + '%';
+      pin.dataset.bx = x / 100; pin.dataset.by = y / 100;
+      pin.title = a.name; pin.setAttribute('aria-label', a.name);
+      pin.innerHTML = `<span class="pin-emoji">${escapeHtml(a.emoji)}</span><span class="pin-label">${escapeHtml(a.name)}${a.star ? ' ⭐' : ''}</span>`;
+      pin.addEventListener('click', () => openModal(a));
+      mapPins.appendChild(pin);
+    });
+    // Zoom sur le continent choisi ; en recherche mondiale, on reste à l'échelle du monde.
+    if (currentContinent !== 'Tous') zoomToAnimals(list);
+    else setMapTransform(1, 0.5, 0.5);
+    spreadPins();   // écarte les épingles qui se chevauchent
+  }
+}
+
+if (mapBack) {
+  mapBack.addEventListener('click', () => {
+    stopEverything();
+    currentContinent = 'Tous';
+    currentSearch = '';
+    if (searchInput) searchInput.value = '';
+    if (searchClear) searchClear.hidden = true;
+    document.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === '🌏 Tous'));
+    applyFilters();
+    const sec = document.querySelector('.map-section');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
+// Recalcule l'écartement des épingles quand la largeur change.
+let mapResizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(mapResizeTimer);
+  mapResizeTimer = setTimeout(() => {
+    if (currentContinent !== 'Tous' || currentSearch.trim()) applyFilters();
+  }, 200);
+});
+
+/* ============================================================
+   FENÊTRE AGRANDIE  (photo entière + texte, avec lecture)
+   ============================================================ */
+const modalOverlay = document.getElementById('modalOverlay');
+const modalClose   = document.getElementById('modalClose');
+const modalPhoto   = document.getElementById('modalPhoto');
+const modalBody    = document.getElementById('modalBody');
+
+function openModal(animal) {
+  stopEverything();
+  modalPhoto.src = safeUrl(animal.photo || PHOTOS[animal.name] || '');
+  modalPhoto.alt = 'Photo : ' + animal.name;
+  modalBody.innerHTML = `
+    <div class="modal-tags">
+      <span class="mtag">🌍 ${escapeHtml(animal.continent)}</span>
+      ${animal.star ? '<span class="mtag" style="background:#ffb300">⭐ Coup de cœur</span>' : ''}
+    </div>
+    <h2 id="modalTitle">${escapeHtml(animal.emoji)} ${escapeHtml(animal.name)}</h2>
+    <div class="facts">
+      <span>📍 ${escapeHtml(animal.where)}</span>
+      <span>📏 ${escapeHtml(animal.size)}</span>
+      <span>🍽️ ${escapeHtml(animal.diet)}</span>
+    </div>
+    <p class="text">${buildWordSpans(animal.text)}</p>
+    <div class="actions">
+      <button class="read-btn">🔊 Lis-moi</button>
+    </div>
+  `;
+  modalBody.querySelector('.read-btn').addEventListener('click', () => readAnimal(animal, modalBody));
+  modalOverlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  stopEverything();
+  modalOverlay.hidden = true;
+  document.body.style.overflow = '';
+}
+
+modalClose.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modalOverlay.hidden) closeModal(); });
+
+buildFilters();
+applyFilters();
+
+// Arrête la lecture si on quitte la page ou l'onglet.
+window.addEventListener('beforeunload', () => synth.cancel());
+</script>
+</body>
+</html>
