@@ -26,8 +26,8 @@
     --serif: "Fraunces", Georgia, "Times New Roman", serif;
     --sans: "Inter", "Segoe UI", system-ui, sans-serif;
     --r-sm: 4px;
-    --r: 8px;
-    --r-lg: 14px;
+    --r: 5px;
+    --r-lg: 8px;
     --shadow-sm: 0 1px 2px rgba(20,30,25,.05), 0 2px 6px rgba(20,30,25,.05);
     --shadow: 0 10px 30px rgba(20,30,25,.10);
     --shadow-lg: 0 24px 60px rgba(10,20,14,.30);
@@ -157,7 +157,7 @@
   .filters { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
     border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
-    font-family: var(--sans); font-weight: 500; padding: 8px 15px; border-radius: 999px; cursor: pointer;
+    font-family: var(--sans); font-weight: 500; padding: 8px 15px; border-radius: 5px; cursor: pointer;
     font-size: 13.5px; transition: border-color .15s, color .15s, background .15s;
   }
   .chip:hover { border-color: var(--forest); color: var(--ink); }
@@ -239,7 +239,7 @@
   .status {
     display: inline-flex; align-items: center; gap: 7px;
     font-family: var(--sans); font-size: 12px; font-weight: 600; padding: 4px 11px 4px 9px;
-    border-radius: 999px; line-height: 1.2; white-space: nowrap; cursor: pointer;
+    border-radius: 5px; line-height: 1.2; white-space: nowrap; cursor: pointer;
     border: 1px solid transparent; transition: filter .12s, transform .06s;
   }
   .status:hover { filter: brightness(.98); }
