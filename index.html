@@ -5,426 +5,417 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; media-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; base-uri 'none'; object-src 'none'; form-action 'none'" />
-<title>Atlas des animaux 🐾</title>
+<title>Atlas des animaux</title>
 <link rel="stylesheet" href="fonts.css" />
 <style>
+
   :root {
-    --green: #2e7d46;
-    --green-dark: #1f5a32;
-    --teal: #12a5a5;
-    --teal-dark: #0e8686;
-    --amber: #f4a623;
-    --ink: #1f2a24;
-    --muted: #6b7a70;
-    --sand: #f3f6ef;
-    --card: #ffffff;
-    --line: #e6ece2;
-    --highlight: #ffe39a;
-    --shadow-sm: 0 2px 10px rgba(20,45,25,.06);
-    --shadow: 0 14px 34px rgba(20,45,25,.10);
-    --shadow-lg: 0 26px 60px rgba(8,25,14,.30);
+    --forest: #24483a;
+    --forest-dark: #1a382c;
+    --ink: #1c2620;
+    --ink-soft: #3c463c;
+    --muted: #79847a;
+    --faint: #a7ada2;
+    --terra: #b5542f;
+    --terra-dark: #984320;
+    --brass: #a9814f;
+    --paper: #f5f1e9;
+    --surface: #fffdf8;
+    --line: #e6e0d4;
+    --hl: #f0e2c9;
+    --serif: "Fraunces", Georgia, "Times New Roman", serif;
+    --sans: "Inter", "Segoe UI", system-ui, sans-serif;
+    --r-sm: 4px;
+    --r: 8px;
+    --r-lg: 14px;
+    --shadow-sm: 0 1px 2px rgba(20,30,25,.05), 0 2px 6px rgba(20,30,25,.05);
+    --shadow: 0 10px 30px rgba(20,30,25,.10);
+    --shadow-lg: 0 24px 60px rgba(10,20,14,.30);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    font-family: "Nunito", "Segoe UI", system-ui, sans-serif;
+    font-family: var(--sans);
     color: var(--ink);
-    background: var(--sand);
+    background: var(--paper);
     min-height: 100vh;
-    line-height: 1.6;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, .map-title, .section-title { font-family: "Poppins", "Segoe UI", sans-serif; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 500; }
+  .eyebrow {
+    font-family: var(--sans); text-transform: uppercase; letter-spacing: .16em;
+    font-size: 12px; font-weight: 600; color: var(--terra);
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before { content: ""; width: 26px; height: 1.5px; background: var(--terra); display: inline-block; }
+  .icon { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 
   /* ---------- Héros ---------- */
   .hero {
-    position: relative;
-    min-height: min(58vh, 460px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 70px 20px 84px;
-    color: #fff;
-    overflow: hidden;
+    position: relative; overflow: hidden; color: #fff;
+    display: flex; flex-direction: column;
+    padding: 0 clamp(20px, 5vw, 56px);
+    min-height: min(94vh, 760px);
   }
   .hero .hero-bg {
-    position: absolute; inset: 0;
-    background: url("images/hero.jpg") center 40%/cover no-repeat;
-    transform: scale(1.03);
-    z-index: 0;
+    position: absolute; inset: 0; z-index: 0;
+    background: url("images/hero.jpg") center 42%/cover no-repeat;
   }
   .hero::after {
     content: ""; position: absolute; inset: 0; z-index: 1;
-    background: linear-gradient(180deg, rgba(20,60,35,.55) 0%, rgba(16,45,28,.62) 55%, rgba(243,246,239,.98) 100%);
+    background:
+      linear-gradient(105deg, rgba(14,26,19,.78) 0%, rgba(14,26,19,.34) 46%, rgba(14,26,19,.12) 72%),
+      linear-gradient(0deg, rgba(12,22,16,.55) 0%, rgba(12,22,16,0) 40%);
   }
   .hero > * { position: relative; z-index: 2; }
-  .hero .kicker {
-    text-transform: uppercase; letter-spacing: 3px; font-size: 13px; font-weight: 700;
-    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
-    padding: 7px 16px; border-radius: 999px; backdrop-filter: blur(4px);
-    margin-bottom: 18px;
+  .hero-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 26px 0 0; gap: 20px;
   }
+  .hero-nav .brand { font-family: var(--serif); font-weight: 600; font-size: 20px; letter-spacing: .01em; color: #fff; text-decoration: none; }
+  .hero-nav .links { display: flex; gap: 26px; }
+  .hero-nav .links a {
+    color: rgba(255,255,255,.86); text-decoration: none; font-size: 14px; font-weight: 500;
+    padding-bottom: 3px; border-bottom: 1.5px solid transparent; transition: border-color .15s, color .15s;
+  }
+  .hero-nav .links a:hover { color: #fff; border-color: var(--terra); }
+  .hero-inner { margin-top: auto; margin-bottom: clamp(46px, 8vh, 96px); max-width: 760px; }
+  .hero .eyebrow { color: #f0d9c9; }
+  .hero .eyebrow::before { background: var(--terra); }
   .hero h1 {
-    margin: 0; font-weight: 800; line-height: 1.08;
-    font-size: clamp(30px, 6vw, 58px);
-    text-shadow: 0 3px 18px rgba(0,0,0,.4);
-    max-width: 14ch;
+    margin: 20px 0 0; font-weight: 400; line-height: 1.02; letter-spacing: -.01em;
+    font-size: clamp(38px, 7vw, 82px); text-shadow: 0 2px 30px rgba(0,0,0,.35);
   }
-  .hero p {
-    margin: 16px 0 0; font-size: clamp(15px, 2.4vw, 20px);
-    max-width: 44ch; font-weight: 600; text-shadow: 0 2px 10px rgba(0,0,0,.35);
+  .hero h1 em { font-style: italic; color: #f3e7d5; }
+  .hero .lede {
+    margin: 22px 0 0; font-size: clamp(16px, 2vw, 20px); line-height: 1.55;
+    max-width: 46ch; color: rgba(255,255,255,.9); text-shadow: 0 2px 14px rgba(0,0,0,.3);
   }
+  .hero-actions { margin-top: 30px; display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
   .hero .cta {
-    margin-top: 26px; display: inline-flex; align-items: center; gap: 10px;
-    background: var(--teal); color: #fff; text-decoration: none;
-    font-weight: 800; font-size: 16px; padding: 14px 26px; border-radius: 999px;
-    box-shadow: 0 10px 24px rgba(18,165,165,.45); transition: transform .12s, background .15s;
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--terra); color: #fff; text-decoration: none;
+    font-family: var(--sans); font-weight: 600; font-size: 15px; letter-spacing: .01em;
+    padding: 14px 24px; border-radius: var(--r); transition: background .18s, transform .06s;
   }
-  .hero .cta:hover { background: var(--teal-dark); transform: translateY(-2px); }
-
-  /* ---------- Barre d'outils ---------- */
-  .toolbar {
-    position: sticky; top: 0; z-index: 40;
-    background: rgba(255,255,255,.92);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-    box-shadow: 0 4px 18px rgba(20,45,25,.06);
-    padding: 12px 16px;
-    display: flex; flex-wrap: wrap; gap: 12px 22px;
-    align-items: center; justify-content: center;
+  .hero .cta:hover { background: var(--terra-dark); }
+  .hero .cta:active { transform: translateY(1px); }
+  .hero .ghost {
+    display: inline-flex; align-items: center; gap: 9px; color: #fff; text-decoration: none;
+    font-size: 15px; font-weight: 500; border-bottom: 1.5px solid rgba(255,255,255,.5); padding-bottom: 2px;
   }
-  .toolbar .group {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 13.5px; color: var(--muted); font-weight: 700;
+  .hero .ghost:hover { border-color: #fff; }
+  .hero-stats {
+    display: flex; gap: clamp(24px, 5vw, 56px); padding: 22px 0 30px; margin-top: 26px;
+    border-top: 1px solid rgba(255,255,255,.22);
   }
-  select, input[type=range] { font-family: inherit; font-size: 14px; }
-  input[type=range] { accent-color: var(--teal); }
-  select {
-    padding: 8px 10px; border-radius: 10px;
-    border: 1.5px solid var(--line); background: #fff; color: var(--ink);
-    max-width: 240px; font-weight: 600;
-  }
-  select:focus { outline: none; border-color: var(--teal); }
-  .speed-val { min-width: 44px; text-align: center; color: var(--teal-dark); font-weight: 800; }
-  .stop-btn {
-    border: none; background: #eef3ec; color: var(--green-dark);
-    font-weight: 800; padding: 9px 18px; border-radius: 999px; cursor: pointer;
-    transition: background .15s, transform .08s;
-  }
-  .stop-btn:hover { background: #e2ebdf; }
-  .stop-btn:active { transform: translateY(1px); }
+  .hero-stats .st b { font-family: var(--serif); font-weight: 500; font-size: clamp(26px, 3.4vw, 38px); display: block; line-height: 1; }
+  .hero-stats .st span { font-size: 11px; text-transform: uppercase; letter-spacing: .14em; color: rgba(255,255,255,.72); font-weight: 600; }
 
   /* ---------- Titres de section ---------- */
+  .section {
+    max-width: 1180px; margin: 0 auto; padding: clamp(46px, 7vw, 88px) clamp(18px, 5vw, 40px) 0;
+  }
   .section-title {
-    text-align: center; color: var(--green-dark);
-    font-size: clamp(21px, 3.4vw, 30px); font-weight: 800;
-    margin: 46px 16px 4px;
+    color: var(--ink); font-size: clamp(28px, 4.6vw, 44px); font-weight: 400; letter-spacing: -.015em;
+    margin: 14px 0 0; max-width: 20ch; line-height: 1.08;
   }
   .section-sub {
-    text-align: center; color: var(--muted); font-weight: 600;
-    margin: 0 16px 8px; font-size: 15px;
+    color: var(--ink-soft); margin: 14px 0 0; font-size: 17px; max-width: 60ch; line-height: 1.6;
   }
-  .section-title .accent { display: block; width: 64px; height: 4px; border-radius: 4px;
-    background: var(--amber); margin: 12px auto 0; }
 
-  /* ---------- Filtres par continent ---------- */
-  .filters {
-    display: flex; flex-wrap: wrap; gap: 9px;
-    justify-content: center; padding: 18px 16px 4px;
-    max-width: 900px; margin: 0 auto;
+  /* ---------- Légende statut ---------- */
+  .status-legend { margin: 18px 0 0; }
+  .status-legend summary { cursor: pointer; font-weight: 600; color: var(--forest); font-size: 14px; list-style: none; }
+  .status-legend summary::-webkit-details-marker { display: none; }
+  .status-legend summary::before { content: "＋ "; color: var(--terra); }
+  .status-legend[open] summary::before { content: "－ "; }
+  .legend-items { display: flex; flex-wrap: wrap; gap: 10px 18px; margin: 14px 0 2px; }
+  .legend-chip { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; font-size: 13px; color: var(--ink-soft); }
+  .legend-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .legend-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+  /* ---------- Recherche + filtres ---------- */
+  .toolbar-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin: 26px 0 0; }
+  .search-wrap { position: relative; flex: 1 1 320px; max-width: 440px; }
+  .search-wrap .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--muted); pointer-events: none; }
+  .search-input {
+    width: 100%; font-family: var(--sans); font-size: 15px; color: var(--ink);
+    padding: 12px 40px 12px 42px; border-radius: var(--r); border: 1px solid var(--line);
+    background: var(--surface); outline: none; transition: border-color .15s, box-shadow .15s;
   }
+  .search-input:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(36,72,58,.10); }
+  .search-input::placeholder { color: var(--faint); }
+  .search-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+  .search-clear {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    width: 22px; height: 22px; border-radius: 50%; border: none; cursor: pointer;
+    background: #ece7dc; color: var(--ink-soft); font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .search-clear:hover { background: #e0dacd; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
-    border: 1.5px solid var(--line); background: #fff; color: var(--green-dark);
-    font-weight: 800; padding: 8px 16px; border-radius: 999px; cursor: pointer;
-    font-size: 14px; font-family: "Nunito", sans-serif;
-    transition: background .15s, color .15s, border-color .15s, transform .08s;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
+    font-family: var(--sans); font-weight: 500; padding: 8px 15px; border-radius: 999px; cursor: pointer;
+    font-size: 13.5px; transition: border-color .15s, color .15s, background .15s;
   }
-  .chip:hover { border-color: var(--green); transform: translateY(-1px); }
-  .chip.active { background: var(--green); border-color: var(--green); color: #fff; }
-  .threat-filter { text-align: center; margin-top: 10px; }
-  .threat-chip { border-color: #f0b429; color: #9a6a00; }
-  .threat-chip:hover { border-color: #f4a623; transform: translateY(-1px); }
-  .threat-chip.active { background: #f4a623; border-color: #f4a623; color: #fff; box-shadow: 0 4px 12px rgba(244,166,35,.4); }
+  .chip:hover { border-color: var(--forest); color: var(--ink); }
+  .chip.active { background: var(--forest); border-color: var(--forest); color: #fff; }
+  .threat-chip { border-color: #dcc3b3; color: var(--terra-dark); }
+  .threat-chip:hover { border-color: var(--terra); color: var(--terra-dark); }
+  .threat-chip.active { background: var(--terra); border-color: var(--terra); color: #fff; }
+  .results-count { color: var(--muted); font-weight: 500; font-size: 13.5px; margin: 16px 0 0; letter-spacing: .01em; }
+  .no-results { text-align: center; color: var(--muted); font-weight: 500; font-size: 18px; padding: 40px 16px 10px; }
 
-  /* ---------- Grille ---------- */
-  main {
-    max-width: 1140px; margin: 0 auto;
-    padding: 18px 16px 40px;
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
+  /* ---------- Grille de cartes ---------- */
+  main.grid {
+    max-width: 1180px; margin: 0 auto; padding: 20px clamp(18px, 5vw, 40px) 40px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 28px 24px;
   }
   .card {
-    background: var(--card); border-radius: 20px; border: 1px solid var(--line);
-    box-shadow: var(--shadow-sm); overflow: hidden;
-    display: flex; flex-direction: column;
-    transition: transform .18s, box-shadow .18s;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    overflow: hidden; display: flex; flex-direction: column;
+    box-shadow: var(--shadow-sm); transition: transform .22s ease, box-shadow .22s ease;
   }
-  .card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
-  .card:hover .photo { transform: scale(1.06); }
-  .card.reading { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(18,165,165,.35), var(--shadow); }
-
-  .banner { height: 188px; position: relative; overflow: hidden; }
-  .banner .photo {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; z-index: 1; display: block;
-    transition: transform .35s ease;
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .card.reading { border-color: var(--forest); box-shadow: 0 0 0 2px rgba(36,72,58,.25), var(--shadow); }
+  .media { position: relative; aspect-ratio: 4 / 3; overflow: hidden; cursor: zoom-in; background: #d9d3c6; }
+  .media .photo { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+  .card:hover .media .photo { transform: scale(1.045); }
+  .media::before {
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(15,25,18,.5) 0%, rgba(15,25,18,0) 34%);
   }
-  .banner .emoji-fallback {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    font-size: 84px; z-index: 0; background: linear-gradient(135deg,#dff3e4,#c7e9d2);
+  .media-tag {
+    position: absolute; top: 13px; left: 15px; z-index: 2;
+    color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+    text-shadow: 0 1px 6px rgba(0,0,0,.4);
   }
-  .banner .tag {
-    position: absolute; top: 12px; left: 12px; z-index: 2;
-    background: rgba(255,255,255,.92); color: var(--green-dark);
-    font-size: 12px; font-weight: 800; padding: 5px 11px; border-radius: 999px;
-    letter-spacing: .2px; box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  .zoom-cue {
+    position: absolute; bottom: 12px; right: 12px; z-index: 2;
+    width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.16); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.4);
+    color: #fff; opacity: 0; transition: opacity .2s;
   }
-  .banner .star {
-    position: absolute; top: 10px; right: 10px; z-index: 2;
-    font-size: 16px; background: var(--amber); color: #fff;
-    width: 30px; height: 30px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 8px rgba(244,166,35,.6);
-  }
-  .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 11px; }
-  .body h2 { margin: 0; font-size: 21px; font-weight: 700; color: var(--ink); }
-  .facts { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
-  .facts span {
-    background: #eef5ec; color: var(--green-dark);
-    padding: 4px 10px; border-radius: 999px; font-weight: 700;
-  }
-  .text { font-size: 15.5px; color: #3a473f; }
-  .text .w { border-radius: 4px; transition: background .05s; }
-  .text .w.spoken { background: var(--highlight); box-shadow: 0 0 0 2px var(--highlight); }
-
-  .actions { display: flex; gap: 10px; margin-top: 2px; }
+  .media:hover .zoom-cue { opacity: 1; }
+  .card .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 13px; }
+  .name-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .name { margin: 0; font-family: var(--serif); font-weight: 500; font-size: 22px; line-height: 1.18; letter-spacing: -.01em; color: var(--ink); }
+  .card .text { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--ink-soft); }
+  .text .w { border-radius: 3px; transition: background .05s; }
+  .text .w.spoken { background: var(--hl); box-shadow: 0 0 0 2px var(--hl); }
+  .meta { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .meta-cell { padding: 11px 6px; text-align: center; border-left: 1px solid var(--line); }
+  .meta-cell:first-child { border-left: none; }
+  .meta-label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--faint); font-weight: 600; margin-bottom: 3px; }
+  .meta-val { display: block; font-size: 13px; color: var(--ink); font-weight: 500; line-height: 1.3; }
+  .actions { display: flex; }
   .read-btn {
-    flex: 1; border: none; background: var(--teal); color: #fff;
-    font-family: "Poppins", sans-serif; font-weight: 700; font-size: 15px;
-    padding: 12px; border-radius: 12px; cursor: pointer;
-    box-shadow: 0 6px 16px rgba(18,165,165,.35);
-    transition: transform .08s, background .15s, box-shadow .15s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+    flex: 1; border: 1px solid var(--forest); background: var(--forest); color: #fff;
+    font-family: var(--sans); font-weight: 600; font-size: 14px; letter-spacing: .01em;
+    padding: 11px 16px; border-radius: var(--r); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    box-shadow: var(--shadow-sm); transition: background .18s, border-color .18s, transform .06s;
   }
-  .read-btn:hover { background: var(--teal-dark); }
-  .read-btn:active { transform: translateY(2px); box-shadow: 0 3px 10px rgba(18,165,165,.3); }
-  .read-btn.playing { background: var(--green); box-shadow: 0 6px 16px rgba(46,125,70,.4); }
-
-  .card .card-hint { font-size: 11.5px; color: var(--muted); text-align: center; font-weight: 600; }
+  .read-btn .icon { width: 16px; height: 16px; }
+  .read-btn:hover { background: var(--forest-dark); border-color: var(--forest-dark); }
+  .read-btn:active { transform: translateY(1px); }
+  .read-btn:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+  .read-btn.playing { background: var(--brass); border-color: var(--brass); }
 
   footer {
-    text-align: center; color: #dff0e4; background: var(--green-dark);
-    padding: 30px 16px 40px; font-size: 13.5px; font-weight: 600;
-    margin-top: 40px;
+    text-align: center; color: #cdd6cd; background: var(--forest-dark);
+    padding: 40px 20px 46px; font-size: 13.5px; font-weight: 400; margin-top: 60px; line-height: 1.7;
   }
-  footer a { color: #fff; }
+  footer .brand { font-family: var(--serif); font-size: 17px; color: #fff; }
   .no-voice {
-    background: #fff6da; color: #7a5b00; border-bottom: 1px solid #f0e2b5;
-    text-align: center; padding: 11px 14px; font-size: 13.5px; font-weight: 700;
+    background: #f6ecd7; color: #7a5b16; border-bottom: 1px solid #ecdcb4;
+    text-align: center; padding: 11px 14px; font-size: 13.5px; font-weight: 500;
     display: none; line-height: 1.45;
   }
 
+  /* ---------- Statut de conservation ---------- */
+  .status {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--sans); font-size: 12px; font-weight: 600; padding: 4px 11px 4px 9px;
+    border-radius: 999px; line-height: 1.2; white-space: nowrap; cursor: pointer;
+    border: 1px solid transparent; transition: filter .12s, transform .06s;
+  }
+  .status:hover { filter: brightness(.98); }
+  .status:active { transform: translateY(1px); }
+  .status:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+  .status .status-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .name-row .status { margin-top: 3px; }
+
+  /* Fenêtre d'info statut */
+  .status-overlay { z-index: 120; }
+  .status-modal { width: min(460px, 100%); }
+  .status-modal-body { padding: 34px 30px 28px; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; }
+  .si-name { margin: 0; font-family: var(--serif); font-weight: 500; font-size: 26px; color: var(--ink); letter-spacing: -.01em; }
+  .si-scale { display: flex; gap: 5px; margin-top: 2px; }
+  .si-seg { width: 38px; padding: 8px 0; border-radius: var(--r-sm); font-family: var(--sans); font-weight: 700; font-size: 11.5px; color: #fff; opacity: .4; transform: scale(.9); transition: transform .1s; }
+  .si-seg.cur { opacity: 1; transform: scale(1.16); box-shadow: 0 0 0 2px var(--ink); }
+  .si-scale-legend { display: flex; justify-content: space-between; width: 100%; max-width: 300px; font-size: 11px; color: var(--muted); font-weight: 600; margin-top: -6px; }
+  .si-text { font-size: 16px; line-height: 1.62; color: var(--ink-soft); margin: 6px 0 0; }
+  .si-foot { font-size: 12.5px; color: var(--muted); font-weight: 500; margin: 4px 0 0; }
+
   /* ---------- Carte du monde ---------- */
-  .map-section { max-width: 1000px; margin: 6px auto 0; padding: 0 16px; }
-  .map-title { color: var(--green-dark); text-align: center; margin: 0 0 12px; font-size: clamp(17px, 2.6vw, 22px); font-weight: 800; }
-  .map-card { background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 16px; box-shadow: var(--shadow-sm); }
-  .map-wrap { position: relative; border-radius: 14px; overflow: hidden; line-height: 0; }
+  .map-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 16px; box-shadow: var(--shadow-sm); margin-top: 22px; }
+  .map-wrap { position: relative; border-radius: var(--r); overflow: hidden; line-height: 0; }
   .map-stage { position: relative; transform-origin: 0 0; transition: transform .5s ease; will-change: transform; }
-  .map-img { width: 100%; height: auto; display: block; }
+  .map-img { width: 100%; height: auto; display: block; filter: saturate(.85) contrast(.98); }
   .map-pins { position: absolute; inset: 0; }
   .map-back {
-    position: absolute; top: 10px; left: 10px; z-index: 8; border: none; cursor: pointer;
-    background: rgba(255,255,255,.95); color: var(--green-dark); line-height: 1;
-    font-family: "Poppins", sans-serif; font-weight: 800; font-size: 13px;
-    padding: 8px 14px; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,.35);
+    position: absolute; top: 12px; left: 12px; z-index: 8; border: 1px solid var(--line); cursor: pointer;
+    background: var(--surface); color: var(--forest); line-height: 1; font-family: var(--sans); font-weight: 600; font-size: 13px;
+    padding: 9px 15px; border-radius: var(--r); box-shadow: var(--shadow-sm);
   }
-  .map-back:hover { background: #fff; }
+  .map-back:hover { background: #fff; border-color: var(--forest); }
   .map-back[hidden] { display: none; }
   .pin {
     position: absolute; transform: translate(-50%, -50%) scale(var(--pin-scale, 1));
     width: 30px; height: 30px; padding: 0; border: none; cursor: pointer;
-    border-radius: 50%; background: #fff;
-    box-shadow: 0 2px 6px rgba(0,0,0,.5), 0 0 0 2.5px var(--teal);
+    border-radius: 50%; background: var(--surface);
+    box-shadow: 0 2px 5px rgba(0,0,0,.35), 0 0 0 2px var(--forest);
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; z-index: 2; transition: transform .12s;
+    font-size: 15px; z-index: 2; transition: transform .12s;
     animation: pinfade .35s ease-out;
   }
   @keyframes pinfade { from { opacity: 0; } }
-  .pin:hover, .pin:focus { transform: translate(-50%, -50%) scale(calc(var(--pin-scale, 1) * 1.4)); z-index: 5; outline: none; box-shadow: 0 2px 6px rgba(0,0,0,.5), 0 0 0 2.5px var(--amber); }
+  .pin:hover, .pin:focus { transform: translate(-50%, -50%) scale(calc(var(--pin-scale, 1) * 1.35)); z-index: 5; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,.35), 0 0 0 2px var(--terra); }
   .pin .pin-label, .cluster .pin-label {
     position: absolute; bottom: 128%; left: 50%; transform: translateX(-50%);
-    background: var(--green-dark); color: #fff; font-size: 11px; font-weight: 800;
-    padding: 3px 9px; border-radius: 8px; white-space: nowrap;
-    opacity: 0; pointer-events: none; transition: opacity .12s;
+    background: var(--forest-dark); color: #fff; font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: var(--r-sm); white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity .12s; font-family: var(--sans);
   }
-  .pin:hover .pin-label, .pin:focus .pin-label,
-  .cluster:hover .pin-label, .cluster:focus .pin-label { opacity: 1; }
+  .pin:hover .pin-label, .pin:focus .pin-label, .cluster:hover .pin-label, .cluster:focus .pin-label { opacity: 1; }
   @keyframes pindrop { from { opacity: 0; transform: translate(-50%, -180%) scale(.5); } }
-  /* Bulles de continent (vue par défaut, carte épurée) */
   .cluster {
     position: absolute; transform: translate(-50%, -50%);
-    min-width: 44px; height: 44px; padding: 0 8px; border: none; cursor: pointer;
-    border-radius: 999px; background: var(--green); color: #fff;
-    box-shadow: 0 3px 12px rgba(0,0,0,.45), 0 0 0 3px #fff;
+    min-width: 42px; height: 42px; padding: 0 8px; border: none; cursor: pointer;
+    border-radius: 999px; background: var(--forest); color: #fff;
+    box-shadow: 0 3px 10px rgba(0,0,0,.35), 0 0 0 3px var(--surface);
     display: flex; align-items: center; justify-content: center;
-    font-family: "Poppins", sans-serif; font-weight: 800; font-size: 17px;
-    z-index: 3; transition: transform .12s, background .15s;
-    animation: pindrop .4s ease-out both;
+    font-family: var(--serif); font-weight: 500; font-size: 17px;
+    z-index: 3; transition: transform .12s, background .15s; animation: pindrop .4s ease-out both;
   }
-  .cluster:hover, .cluster:focus { transform: translate(-50%, -50%) scale(1.12); background: var(--green-dark); z-index: 6; outline: none; }
+  .cluster:hover, .cluster:focus { transform: translate(-50%, -50%) scale(1.12); background: var(--forest-dark); z-index: 6; outline: none; }
 
   /* ---------- Fenêtre agrandie (modale) ---------- */
   .modal-overlay {
     position: fixed; inset: 0; z-index: 100;
-    background: rgba(12,30,18,.72); backdrop-filter: blur(4px);
+    background: rgba(14,22,16,.72); backdrop-filter: blur(4px);
     display: flex; align-items: center; justify-content: center; padding: 20px;
     animation: fadein .18s ease-out;
   }
   .modal-overlay[hidden] { display: none; }
   @keyframes fadein { from { opacity: 0; } }
   .modal {
-    background: #fff; border-radius: 24px; overflow: hidden;
+    background: var(--surface); border-radius: var(--r-lg); overflow: hidden;
     width: min(680px, 100%); max-height: 92vh; display: flex; flex-direction: column;
-    box-shadow: var(--shadow-lg); position: relative;
-    animation: pop .2s ease-out;
+    box-shadow: var(--shadow-lg); position: relative; animation: pop .2s ease-out;
   }
-  @keyframes pop { from { transform: scale(.94); opacity: 0; } }
+  @keyframes pop { from { transform: scale(.96); opacity: 0; } }
   .modal-close {
-    position: absolute; top: 12px; right: 12px; z-index: 3;
-    width: 42px; height: 42px; border-radius: 50%; border: none; cursor: pointer;
-    background: rgba(0,0,0,.5); color: #fff; font-size: 20px; font-weight: bold;
+    position: absolute; top: 14px; right: 14px; z-index: 3;
+    width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer;
+    background: rgba(20,30,22,.5); color: #fff; font-size: 18px;
     display: flex; align-items: center; justify-content: center; transition: background .15s;
   }
-  .modal-close:hover { background: rgba(0,0,0,.78); }
-  .modal-photo-wrap {
-    background: #10251a; display: flex; align-items: center; justify-content: center;
-    max-height: 46vh;
-  }
+  .modal-close:hover { background: rgba(20,30,22,.8); }
+  .modal-photo-wrap { background: #10201a; display: flex; align-items: center; justify-content: center; max-height: 46vh; }
   .modal-photo { width: 100%; max-height: 46vh; object-fit: contain; display: block; }
-  .modal-body { padding: 20px 24px 26px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-  .modal-body h2 { margin: 0; font-size: 27px; font-weight: 800; color: var(--green-dark); }
-  .modal-body .text { font-size: 17px; line-height: 1.65; color: #35433b; }
-  .modal-tags { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .modal-tags .mtag {
-    background: var(--teal); color: #fff; font-size: 12px; font-weight: 800;
-    padding: 5px 12px; border-radius: 999px;
-  }
-  /* ---------- Recherche ---------- */
-  .search-wrap { position: relative; max-width: 470px; margin: 8px auto 2px; padding: 0 16px; }
-  .search-icon { position: absolute; left: 32px; top: 50%; transform: translateY(-50%); font-size: 15px; opacity: .55; pointer-events: none; }
-  .search-input {
-    width: 100%; font-family: "Nunito", sans-serif; font-size: 16px; font-weight: 600;
-    padding: 13px 46px; border-radius: 999px; border: 1.5px solid var(--line);
-    background: #fff; color: var(--ink); box-shadow: var(--shadow-sm); outline: none;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  .search-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(18,165,165,.18); }
-  .search-input::placeholder { color: #9aa89e; font-weight: 600; }
-  .search-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
-  .search-clear {
-    position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
-    width: 26px; height: 26px; border-radius: 50%; border: none; cursor: pointer;
-    background: #e6ece2; color: var(--green-dark); font-weight: bold; font-size: 12px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .search-clear:hover { background: #d6e0d0; }
-  .results-count { text-align: center; color: var(--muted); font-weight: 700; font-size: 13px; margin: 10px 16px 0; }
-  .no-results { text-align: center; color: var(--muted); font-weight: 700; font-size: 17px; padding: 24px 16px 8px; }
+  .modal-body { padding: 24px 28px 28px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+  .modal-body .name-row { align-items: center; }
+  .modal-body .si-name, .modal-body .name { font-size: 30px; }
+  .modal-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .16em; color: var(--terra); font-weight: 600; }
+  .modal-body .text { font-size: 16.5px; line-height: 1.68; color: var(--ink-soft); }
+  .modal-body .meta { margin: 2px 0; }
+  .modal-body .read-btn { align-self: flex-start; flex: 0 0 auto; padding: 12px 22px; }
 
-  /* ---------- Statut de conservation (IUCN) ---------- */
-  .status {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12px; font-weight: 800; padding: 4px 11px; border-radius: 999px;
-    line-height: 1.15; white-space: nowrap; cursor: pointer; border: none;
-    transition: filter .12s, transform .08s;
-  }
-  .status:hover { filter: brightness(1.07) saturate(1.05); }
-  .status:active { transform: translateY(1px); }
-  .status:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
-  .status .status-dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.85); box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
-  .status .status-info { font-size: 11px; opacity: .8; margin-left: 1px; }
-
-  /* Fenêtre d'info sur le statut de conservation */
-  .status-overlay { z-index: 120; }
-  .status-modal { width: min(460px, 100%); }
-  .status-modal-body { padding: 32px 26px 26px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
-  .status-modal-body .si-big { font-size: 15px; padding: 8px 18px; cursor: default; }
-  .status-modal-body .si-big:hover { filter: none; }
-  .si-name { margin: 2px 0 0; font-family: "Poppins", sans-serif; font-size: 23px; font-weight: 800; color: var(--green-dark); }
-  .si-scale { display: flex; gap: 5px; margin-top: 4px; }
-  .si-seg { width: 36px; padding: 7px 0; border-radius: 8px; font-weight: 800; font-size: 12px; opacity: .45; transform: scale(.9); transition: transform .1s; }
-  .si-seg.cur { opacity: 1; transform: scale(1.14); box-shadow: 0 0 0 2px var(--ink); }
-  .si-scale-legend { display: flex; justify-content: space-between; width: 100%; max-width: 285px; font-size: 11px; color: var(--muted); font-weight: 700; margin-top: -6px; }
-  .si-text { font-size: 16px; line-height: 1.6; color: #35433b; margin: 4px 0 0; }
-  .si-foot { font-size: 12.5px; color: var(--muted); font-weight: 700; margin: 2px 0 0; }
-  .status-row { margin-top: 2px; }
-  .modal-tags .status { font-size: 12.5px; }
-  .status-legend { max-width: 800px; margin: 4px auto 0; padding: 0 16px; text-align: center; }
-  .status-legend summary { cursor: pointer; font-weight: 800; color: var(--green-dark); font-size: 14px; list-style: none; }
-  .status-legend summary::-webkit-details-marker { display: none; }
-  .status-legend summary::before { content: "▸ "; }
-  .status-legend[open] summary::before { content: "▾ "; }
-  .legend-items { display: flex; flex-wrap: wrap; gap: 8px 10px; justify-content: center; margin: 12px 0 2px; }
-  .legend-chip { display: inline-flex; align-items: center; gap: 7px; font-weight: 700; font-size: 12.5px; color: var(--ink); }
-  .legend-dot { width: 15px; height: 15px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 1px rgba(0,0,0,.12); }
-  .legend-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
 </style>
 </head>
 <body>
-  <header class="hero">
+  <header class="hero" id="top">
     <div class="hero-bg"></div>
-    <span class="kicker">🐾 Atlas des animaux</span>
-    <h1>Les animaux extraordinaires du monde</h1>
-    <p>Une grande collection de créatures fascinantes des quatre coins de la planète.</p>
-    <a class="cta" href="#grid">Explorer les animaux ↓</a>
+    <nav class="hero-nav">
+      <a class="brand" href="#top">Atlas des animaux</a>
+      <div class="links">
+        <a href="#collection">Les animaux</a>
+        <a href="#mapSection">La carte</a>
+        <a href="#collection" id="navThreat">Menacés</a>
+      </div>
+    </nav>
+    <div class="hero-inner">
+      <span class="eyebrow">Guide de terrain · 130 espèces</span>
+      <h1>Le monde vivant,<br><em>une espèce à la fois.</em></h1>
+      <p class="lede">Un atlas illustré des animaux de la planète — leur habitat, leurs mœurs et leur statut de conservation, raconté à voix haute.</p>
+      <div class="hero-actions">
+        <a class="cta" href="#collection">Explorer les animaux</a>
+        <a class="ghost" href="#collection"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.8 6a9 9 0 0 1 0 12"/></svg> Écouter une fiche</a>
+      </div>
+      <div class="hero-stats">
+        <div class="st"><b>130</b><span>Espèces</span></div>
+        <div class="st"><b>9</b><span>Régions</span></div>
+        <div class="st"><b>UICN</b><span>Statut de conservation</span></div>
+      </div>
+    </div>
   </header>
 
-  <h2 class="section-title">🗺️ Explore la carte du monde<span class="accent"></span></h2>
-  <p class="section-sub">Clique sur un continent pour voir ses animaux, puis sur une épingle pour en rencontrer un.</p>
-  <section class="map-section">
+  <section class="section" id="mapSection">
+    <span class="eyebrow">La carte</span>
+    <h2 class="section-title">Où vivent-ils&nbsp;?</h2>
+    <p class="section-sub">Choisis un continent pour voir ses animaux, puis une épingle pour en rencontrer un de plus près.</p>
     <div class="map-card">
       <div class="map-wrap">
         <div class="map-stage" id="mapStage">
           <img class="map-img" src="images/world-map.jpg" alt="Carte du monde" />
           <div class="map-pins" id="mapPins"></div>
         </div>
-        <button class="map-back" id="mapBack" hidden>↩︎ Carte du monde</button>
+        <button class="map-back" id="mapBack" hidden>← Carte du monde</button>
       </div>
     </div>
   </section>
 
-  <h2 class="section-title" id="grid-title">🐾 Rencontre les animaux<span class="accent"></span></h2>
-  <p class="section-sub">Cherche un animal ou filtre par continent, puis touche « Lis-moi » ou clique une photo pour l'agrandir.</p>
-  <details class="status-legend">
-    <summary>Que veut dire la pastille de couleur&nbsp;? (statut de conservation)</summary>
-    <div class="legend-items">
-      <span class="legend-chip"><span class="legend-dot" style="background:#60c659"></span>Préoccupation mineure</span>
-      <span class="legend-chip"><span class="legend-dot" style="background:#cce226"></span>Quasi menacée</span>
-      <span class="legend-chip"><span class="legend-dot" style="background:#f2df1e"></span>Vulnérable</span>
-      <span class="legend-chip"><span class="legend-dot" style="background:#fc7f3f"></span>En danger</span>
-      <span class="legend-chip"><span class="legend-dot" style="background:#d81e05"></span>En danger critique</span>
-      <span class="legend-chip"><span class="legend-dot" style="background:#542344"></span>Éteinte à l'état sauvage</span>
-      <span class="legend-chip"><span class="legend-dot" style="background:#b98b5e"></span>Animal domestique</span>
+  <section class="section" id="collection">
+    <span class="eyebrow">La collection</span>
+    <h2 class="section-title" id="grid-title">Cent trente espèces, d'un continent à l'autre</h2>
+    <p class="section-sub">Cherche une espèce, filtre par continent ou par statut de conservation, puis écoute chaque fiche à voix haute.</p>
+    <details class="status-legend">
+      <summary>Comprendre les statuts de conservation</summary>
+      <div class="legend-items">
+        <span class="legend-chip"><span class="legend-dot" style="background:#3f8f5f"></span>Préoccupation mineure</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:#8fae2f"></span>Quasi menacée</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:#d3ab1f"></span>Vulnérable</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:#e07b3c"></span>En danger</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:#c0392b"></span>En danger critique</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:#6b3a6b"></span>Éteinte à l'état sauvage</span>
+        <span class="legend-chip"><span class="legend-dot" style="background:#a9814f"></span>Animal domestique</span>
+      </div>
+      <p class="legend-note">Du plus sûr au plus menacé, selon la Liste rouge de l'UICN.</p>
+    </details>
+    <div class="toolbar-row">
+      <div class="search-wrap">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" id="search" class="search-input" autocomplete="off" aria-label="Chercher une espèce"
+               placeholder="Chercher une espèce…" />
+        <button class="search-clear" id="searchClear" hidden aria-label="Effacer la recherche">✕</button>
+      </div>
+      <div class="filters" id="filters"></div>
+      <button id="threatToggle" class="chip threat-chip" aria-pressed="false">Menacés seulement</button>
     </div>
-    <p class="legend-note">Du plus sûr (vert) au plus menacé (rouge) — selon la Liste rouge de l'UICN. 🌍</p>
-  </details>
-  <div class="search-wrap">
-    <span class="search-icon">🔍</span>
-    <input type="search" id="search" class="search-input" autocomplete="off" aria-label="Chercher un animal"
-           placeholder="Chercher un animal… (ex. « lion », « ours », « Afrique »)" />
-    <button class="search-clear" id="searchClear" hidden aria-label="Effacer la recherche">✕</button>
-  </div>
-  <div class="filters" id="filters"></div>
-  <div class="threat-filter">
-    <button id="threatToggle" class="chip threat-chip" aria-pressed="false">⚠️ Menacés seulement</button>
-  </div>
-  <p class="results-count" id="resultsCount"></p>
+    <p class="results-count" id="resultsCount"></p>
+  </section>
 
-  <main id="grid"></main>
-  <div class="no-results" id="noResults" hidden>😕 Aucun animal ne correspond à ta recherche.</div>
+  <main id="grid" class="grid"></main>
+  <div class="no-results" id="noResults" hidden>Aucune espèce ne correspond à ta recherche.</div>
 
-  <footer>🐾 Atlas des animaux &middot; Une collection à lire et à écouter.<br>Photos et carte&nbsp;: Wikimedia Commons</footer>
+  <footer>
+    <span class="brand">Atlas des animaux</span><br>
+    Une collection à lire et à écouter. Photos et carte&nbsp;: Wikimedia Commons · Voix&nbsp;: Amélie (ElevenLabs).
+  </footer>
 
   <!-- Fenêtre agrandie -->
   <div class="modal-overlay" id="modalOverlay" hidden>
@@ -719,11 +710,17 @@ if (voiceSelect) {
 let currentCard = null;
 let currentAudio = null;   // pour les fichiers audio enregistrés
 
+// Icônes ligne (pas d'émoji) pour le bouton de lecture.
+const ICON_SPEAKER = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.8 6a9 9 0 0 1 0 12"/></svg>';
+const ICON_STOP = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>';
+const READ_LABEL = ICON_SPEAKER + ' Lis-moi';
+const STOP_LABEL = ICON_STOP + ' Arrêter';
+
 function clearReadingState() {
   document.querySelectorAll('.reading').forEach(c => c.classList.remove('reading'));
   document.querySelectorAll('.read-btn.playing').forEach(b => {
     b.classList.remove('playing');
-    b.innerHTML = '🔊 Lis-moi';
+    b.innerHTML = READ_LABEL;
   });
   document.querySelectorAll('.w.spoken').forEach(w => w.classList.remove('spoken'));
   currentCard = null;
@@ -744,7 +741,7 @@ function readAnimal(animal, card) {
 
   card.classList.add('reading');
   btn.classList.add('playing');
-  btn.innerHTML = '⏸ Arrêter';
+  btn.innerHTML = STOP_LABEL;
   currentCard = card;
 
   // 1) Voix enregistrée (Amélie, ElevenLabs) : prioritaire si disponible.
@@ -820,21 +817,21 @@ function safeUrl(u){ u=String(u==null?'':u); return /^\s*(javascript|data|vbscri
 
 // Statut de conservation IUCN : code -> libellé français + couleurs officielles.
 const STATUS_INFO = {
-  EX: { short:'EX',  label:'Éteinte',                    bg:'#221f1f', fg:'#ffffff' },
-  EW: { short:'EW',  label:'Éteinte à l\'état sauvage',  bg:'#542344', fg:'#ffffff' },
-  CR: { short:'CR',  label:'En danger critique',         bg:'#d81e05', fg:'#ffffff' },
-  EN: { short:'EN',  label:'En danger',                  bg:'#fc7f3f', fg:'#3a2000' },
-  VU: { short:'VU',  label:'Vulnérable',                 bg:'#f2df1e', fg:'#4a4000' },
-  NT: { short:'NT',  label:'Quasi menacée',              bg:'#cce226', fg:'#38400a' },
-  LC: { short:'LC',  label:'Préoccupation mineure',      bg:'#60c659', fg:'#0c3a10' },
-  DD: { short:'DD',  label:'Données insuffisantes',      bg:'#d1d1c6', fg:'#3a3a30' },
-  NE: { short:'NE',  label:'Non évaluée',                bg:'#e3e3dc', fg:'#4a4a44' },
-  DO: { short:'DOM', label:'Animal domestique',          bg:'#b98b5e', fg:'#ffffff' }
+  EX: { short:'EX',  label:'Éteinte',                    solid:'#33322d', bg:'#e9e7e2', border:'#d3cfc6', fg:'#3a3a34' },
+  EW: { short:'EW',  label:'Éteinte à l\'état sauvage',  solid:'#6b3a6b', bg:'#efe6ef', border:'#dcc9dc', fg:'#552a55' },
+  CR: { short:'CR',  label:'En danger critique',         solid:'#c0392b', bg:'#f8e7e4', border:'#eecac4', fg:'#8f261b' },
+  EN: { short:'EN',  label:'En danger',                  solid:'#e07b3c', bg:'#fbeee2', border:'#f2d8bf', fg:'#9a4a1c' },
+  VU: { short:'VU',  label:'Vulnérable',                 solid:'#d3ab1f', bg:'#f8f2d9', border:'#e9dfae', fg:'#7a6413' },
+  NT: { short:'NT',  label:'Quasi menacée',              solid:'#8fae2f', bg:'#eff3e0', border:'#dbe4bd', fg:'#59691f' },
+  LC: { short:'LC',  label:'Préoccupation mineure',      solid:'#3f8f5f', bg:'#e7f1ea', border:'#cbe1d3', fg:'#2c5a3c' },
+  DD: { short:'DD',  label:'Données insuffisantes',      solid:'#a6a396', bg:'#eeece6', border:'#dbd8ce', fg:'#5a574e' },
+  NE: { short:'NE',  label:'Non évaluée',                solid:'#b0ac9f', bg:'#efece5', border:'#ddd9cf', fg:'#5a574e' },
+  DO: { short:'DOM', label:'Animal domestique',          solid:'#a9814f', bg:'#f2ebe0', border:'#e2d5c1', fg:'#775227' }
 };
 function statusOf(name){ return (typeof STATUS_MAP !== 'undefined' && STATUS_MAP[name]) || 'NE'; }
 function statusBadge(name){
   const s = STATUS_INFO[statusOf(name)] || STATUS_INFO.NE;
-  return `<span class="status" role="button" tabindex="0" data-animal="${escapeHtml(name)}" style="background:${s.bg};color:${s.fg}" title="Clique pour en savoir plus sur ce statut"><span class="status-dot"></span>${escapeHtml(s.label)}<span class="status-info">ⓘ</span></span>`;
+  return `<span class="status" role="button" tabindex="0" data-animal="${escapeHtml(name)}" style="background:${s.bg};border-color:${s.border};color:${s.fg}" title="En savoir plus sur ce statut"><span class="status-dot" style="background:${s.solid}"></span>${escapeHtml(s.label)}</span>`;
 }
 // Explication (niveau pré-ado) de chaque catégorie de la Liste rouge UICN.
 const STATUS_MEANING = {
@@ -856,30 +853,30 @@ function makeCard(animal) {
   card.dataset.continent = animal.continent;
 
   card.innerHTML = `
-    <div class="banner" style="background:${bannerColor(animal.continent)};cursor:pointer" title="Clique pour agrandir">
-      <span class="emoji-fallback">${escapeHtml(animal.emoji)}</span>
+    <div class="media" title="Agrandir">
       <img class="photo" src="${escapeHtml(safeUrl(animal.photo || PHOTOS[animal.name] || ''))}" alt="Photo : ${escapeHtml(animal.name)}" loading="lazy"
            onerror="this.style.display='none';" />
-      <span class="tag">🌍 ${escapeHtml(animal.continent)}</span>
-      ${animal.star ? '<span class="star" title="Coup de cœur !">⭐</span>' : ''}
+      <span class="media-tag">${escapeHtml(animal.continent)}</span>
+      <span class="zoom-cue" aria-hidden="true">⤢</span>
     </div>
     <div class="body">
-      <h2>${escapeHtml(animal.emoji)} ${escapeHtml(animal.name)}</h2>
-      <div class="facts">
-        <span>📍 ${escapeHtml(animal.where)}</span>
-        <span>📏 ${escapeHtml(animal.size)}</span>
-        <span>🍽️ ${escapeHtml(animal.diet)}</span>
+      <div class="name-row">
+        <h2 class="name">${escapeHtml(animal.name)}</h2>
+        ${statusBadge(animal.name)}
       </div>
-      <div class="status-row">${statusBadge(animal.name)}</div>
       <p class="text">${buildWordSpans(animal.text)}</p>
-      <div class="actions">
-        <button class="read-btn">🔊 Lis-moi</button>
+      <div class="meta">
+        <div class="meta-cell"><span class="meta-label">Habitat</span><span class="meta-val">${escapeHtml(animal.where)}</span></div>
+        <div class="meta-cell"><span class="meta-label">Taille</span><span class="meta-val">${escapeHtml(animal.size)}</span></div>
+        <div class="meta-cell"><span class="meta-label">Régime</span><span class="meta-val">${escapeHtml(animal.diet)}</span></div>
       </div>
-      <div class="card-hint">🔍 Clique sur la photo pour l'agrandir</div>
+      <div class="actions">
+        <button class="read-btn">${READ_LABEL}</button>
+      </div>
     </div>
   `;
   card.querySelector('.read-btn').addEventListener('click', (e) => { e.stopPropagation(); readAnimal(animal, card); });
-  card.querySelector('.banner').addEventListener('click', () => openModal(animal));
+  card.querySelector('.media').addEventListener('click', () => openModal(animal));
   return card;
 }
 
@@ -982,7 +979,7 @@ function buildFilters() {
   continents.forEach((c, i) => {
     const b = document.createElement('button');
     b.className = 'chip' + (i === 0 ? ' active' : '');
-    b.textContent = c === 'Tous' ? '🌏 Tous' : c;
+    b.textContent = c;
     b.addEventListener('click', () => {
       stopEverything();
       filtersEl.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
@@ -1012,13 +1009,26 @@ if (searchClear) {
 }
 
 const threatToggle = document.getElementById('threatToggle');
+function setThreatened(on) {
+  onlyThreatened = on;
+  if (threatToggle) {
+    threatToggle.classList.toggle('active', on);
+    threatToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  applyFilters();
+}
 if (threatToggle) {
-  threatToggle.addEventListener('click', () => {
+  threatToggle.addEventListener('click', () => { stopEverything(); setThreatened(!onlyThreatened); });
+}
+// Lien de navigation « Menacés » : active le filtre et défile vers la collection.
+const navThreat = document.getElementById('navThreat');
+if (navThreat) {
+  navThreat.addEventListener('click', (e) => {
+    e.preventDefault();
     stopEverything();
-    onlyThreatened = !onlyThreatened;
-    threatToggle.classList.toggle('active', onlyThreatened);
-    threatToggle.setAttribute('aria-pressed', onlyThreatened ? 'true' : 'false');
-    applyFilters();
+    if (!onlyThreatened) setThreatened(true);
+    const sec = document.getElementById('collection');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
 
@@ -1173,7 +1183,7 @@ if (mapBack) {
     if (threatToggle) { threatToggle.classList.remove('active'); threatToggle.setAttribute('aria-pressed', 'false'); }
     if (searchInput) searchInput.value = '';
     if (searchClear) searchClear.hidden = true;
-    filtersEl.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === '🌏 Tous'));
+    filtersEl.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === 'Tous'));
     applyFilters();
     const sec = document.querySelector('.map-section');
     if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1202,20 +1212,19 @@ function openModal(animal) {
   modalPhoto.src = safeUrl(animal.photo || PHOTOS[animal.name] || '');
   modalPhoto.alt = 'Photo : ' + animal.name;
   modalBody.innerHTML = `
-    <div class="modal-tags">
-      <span class="mtag">🌍 ${escapeHtml(animal.continent)}</span>
+    <span class="modal-eyebrow">${escapeHtml(animal.continent)}</span>
+    <div class="name-row">
+      <h2 class="name" id="modalTitle">${escapeHtml(animal.name)}</h2>
       ${statusBadge(animal.name)}
-      ${animal.star ? '<span class="mtag" style="background:#ffb300">⭐ Coup de cœur</span>' : ''}
-    </div>
-    <h2 id="modalTitle">${escapeHtml(animal.emoji)} ${escapeHtml(animal.name)}</h2>
-    <div class="facts">
-      <span>📍 ${escapeHtml(animal.where)}</span>
-      <span>📏 ${escapeHtml(animal.size)}</span>
-      <span>🍽️ ${escapeHtml(animal.diet)}</span>
     </div>
     <p class="text">${buildWordSpans(animal.text)}</p>
+    <div class="meta">
+      <div class="meta-cell"><span class="meta-label">Habitat</span><span class="meta-val">${escapeHtml(animal.where)}</span></div>
+      <div class="meta-cell"><span class="meta-label">Taille</span><span class="meta-val">${escapeHtml(animal.size)}</span></div>
+      <div class="meta-cell"><span class="meta-label">Régime</span><span class="meta-val">${escapeHtml(animal.diet)}</span></div>
+    </div>
     <div class="actions">
-      <button class="read-btn">🔊 Lis-moi</button>
+      <button class="read-btn">${READ_LABEL}</button>
     </div>
   `;
   modalBody.querySelector('.read-btn').addEventListener('click', () => readAnimal(animal, modalBody));
@@ -1247,15 +1256,15 @@ function openStatusInfo(name) {
   const scaleHtml = onScale ? `
     <div class="si-scale">${SCALE.map(c => {
       const si = STATUS_INFO[c];
-      return `<span class="si-seg${c === code ? ' cur' : ''}" style="background:${si.bg};color:${si.fg}" title="${escapeHtml(si.label)}">${escapeHtml(si.short)}</span>`;
+      return `<span class="si-seg${c === code ? ' cur' : ''}" style="background:${si.solid}" title="${escapeHtml(si.label)}">${escapeHtml(si.short)}</span>`;
     }).join('')}</div>
-    <div class="si-scale-legend"><span>🟢 plus sûr</span><span>plus menacé 🔴</span></div>` : '';
+    <div class="si-scale-legend"><span>Plus sûr</span><span>Plus menacé</span></div>` : '';
   statusBody.innerHTML = `
-    <span class="status si-big" style="background:${s.bg};color:${s.fg}"><span class="status-dot"></span>${escapeHtml(s.label)}</span>
+    <span class="status si-big" style="background:${s.bg};border-color:${s.border};color:${s.fg}"><span class="status-dot" style="background:${s.solid}"></span>${escapeHtml(s.label)}</span>
     <h3 class="si-name">${escapeHtml(name)}</h3>
     ${scaleHtml}
     <p class="si-text">${escapeHtml(STATUS_MEANING[code] || '')}</p>
-    <p class="si-foot">Statut établi par la Liste rouge de l'UICN 🌍</p>
+    <p class="si-foot">Statut établi par la Liste rouge de l'UICN</p>
   `;
   statusOverlay.hidden = false;
   document.body.style.overflow = 'hidden';
