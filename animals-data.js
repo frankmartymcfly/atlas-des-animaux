@@ -1,4 +1,4 @@
-/* Données générées : animaux des zoos de Granby et de Saint-Félicien. */
+/* Données générées : animaux des zoos de Granby et de Saint-Félicien (+ lapins). */
 var EXTRA_ANIMALS = [
   {
     "name": "Girafe de Rothschild",
@@ -1415,6 +1415,54 @@ var EXTRA_ANIMALS = [
     "audio": null,
     "photo": "images/oie-domestique.jpg",
     "text": "L'oie domestique est élevée depuis l'Antiquité, en Europe comme en Asie, à partir d'oies sauvages apprivoisées peu à peu. Bien plus lourde que ses cousines des marais, elle vole rarement et préfère se dandiner dans la cour de ferme. Reconnue pour son caractère bien affirmé, elle n'hésite pas à cacarder très fort et à charger les intrus, ce qui en fait une excellente gardienne. On raconte même que des oies ont autrefois sauvé la ville de Rome en donnant l'alerte durant la nuit ! Fidèle en amour, elle reste souvent avec le même partenaire pendant plusieurs années."
+  },
+  {
+    "name": "Lapin européen",
+    "emoji": "🐰",
+    "continent": "Europe",
+    "where": "Europe (Espagne, garrigues)",
+    "size": "34–50 cm",
+    "diet": "Herbes et écorces",
+    "star": false,
+    "audio": null,
+    "photo": "images/lapin-europeen.jpg",
+    "text": "Le lapin européen est l'ancêtre de tous les lapins de compagnie ! Originaire d'Espagne et du sud de l'Europe, ce petit mammifère aux longues oreilles vit en groupe dans des terriers creusés sous terre, un véritable labyrinthe appelé une garenne. Il est célèbre pour sa vitesse : quand un danger approche, il tape le sol avec ses pattes arrière pour prévenir les autres, puis détale en zigzag. Il peut avoir des dizaines de petits par année, ce qui lui a valu sa réputation. Pourtant, dans la nature, l'espèce est aujourd'hui en danger : les maladies et la disparition de son habitat ont fait chuter ses populations."
+  },
+  {
+    "name": "Lapin de Floride",
+    "emoji": "🐰",
+    "continent": "Amérique du Nord",
+    "where": "Prairies et jardins",
+    "size": "36–48 cm",
+    "diet": "Herbes et feuilles",
+    "star": false,
+    "audio": null,
+    "photo": "images/lapin-de-floride.jpg",
+    "text": "Avec sa petite queue ronde et blanche comme une boule de coton, le lapin de Floride porte bien son surnom de « cottontail ». On le croise partout en Amérique du Nord, des prairies aux jardins de banlieue, où il grignote de l'herbe au lever et au coucher du soleil. Discret et rapide, il se fige dès qu'il sent un prédateur, puis bondit à toute allure en montrant sa queue blanche comme un signal d'alarme. La femelle cache ses bébés dans un petit nid tapissé de poils et d'herbe, et ne revient les nourrir que quelques minutes par jour pour ne pas attirer l'attention des renards et des rapaces."
+  },
+  {
+    "name": "Lièvre d'Amérique",
+    "emoji": "🐇",
+    "continent": "Amérique du Nord",
+    "where": "Forêts boréales du Canada",
+    "size": "36–52 cm",
+    "diet": "Herbes, feuilles, écorces",
+    "star": false,
+    "audio": null,
+    "photo": "images/lievre-d-amerique.jpg",
+    "text": "Le lièvre d'Amérique a un véritable super-pouvoir : il change de couleur selon la saison ! Brun l'été pour se cacher dans la forêt, il devient blanc comme la neige en hiver pour disparaître dans le paysage. Ses énormes pattes arrière, larges comme des raquettes, lui permettent de courir sur la neige sans s'enfoncer — d'où son nom anglais, « snowshoe ». Il vit dans les forêts boréales du Canada et bondit à toute vitesse pour échapper au lynx, son grand prédateur. Fait étonnant : le nombre de lièvres et le nombre de lynx montent et descendent ensemble, année après année, comme une grande danse de la nature."
+  },
+  {
+    "name": "Lièvre arctique",
+    "emoji": "🐇",
+    "continent": "Arctique",
+    "where": "Toundra arctique",
+    "size": "43–70 cm",
+    "diet": "Plantes, mousses, brindilles",
+    "star": false,
+    "audio": null,
+    "photo": "images/lievre-arctique.jpg",
+    "text": "Le lièvre arctique est un champion du froid. Il vit tout au nord, dans la toundra glacée du Canada et du Groenland, là où presque rien ne pousse. Son épaisse fourrure blanche le garde au chaud et le camoufle dans la neige, et ses oreilles sont plus courtes que celles des autres lièvres pour perdre moins de chaleur. Pour se protéger du vent, il creuse des abris dans la neige ou se blottit contre les rochers. Il peut bondir à près de 60 kilomètres à l'heure et, chose surprenante, se dresser et sauter sur ses pattes arrière comme un petit kangourou. En hiver, les lièvres arctiques se rassemblent parfois par centaines pour se tenir chaud."
   }
 ];
 
@@ -1536,7 +1584,11 @@ var EXTRA_PHOTOS = {
   "Canard colvert": "images/canard-colvert.jpg",
   "Vache domestique": "images/vache-domestique.jpg",
   "Poule domestique": "images/poule-domestique.jpg",
-  "Oie domestique": "images/oie-domestique.jpg"
+  "Oie domestique": "images/oie-domestique.jpg",
+  "Lapin européen": "images/lapin-europeen.jpg",
+  "Lapin de Floride": "images/lapin-de-floride.jpg",
+  "Lièvre d'Amérique": "images/lievre-d-amerique.jpg",
+  "Lièvre arctique": "images/lievre-arctique.jpg"
 };
 
 var EXTRA_COORDS = {
@@ -2011,5 +2063,21 @@ var EXTRA_COORDS = {
   "Oie domestique": {
     "lat": 50,
     "lon": 10
+  },
+  "Lapin européen": {
+    "lat": 40,
+    "lon": -3
+  },
+  "Lapin de Floride": {
+    "lat": 38,
+    "lon": -85
+  },
+  "Lièvre d'Amérique": {
+    "lat": 55,
+    "lon": -100
+  },
+  "Lièvre arctique": {
+    "lat": 71,
+    "lon": -50
   }
 };

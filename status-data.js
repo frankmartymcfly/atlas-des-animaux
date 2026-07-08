@@ -129,5 +129,9 @@ var STATUS_MAP = {
   "Canard colvert": "LC",
   "Vache domestique": "DO",
   "Poule domestique": "DO",
-  "Oie domestique": "DO"
+  "Oie domestique": "DO",
+  "Lapin européen": "EN",
+  "Lapin de Floride": "LC",
+  "Lièvre d'Amérique": "LC",
+  "Lièvre arctique": "LC"
 };

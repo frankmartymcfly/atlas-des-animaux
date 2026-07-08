@@ -129,5 +129,9 @@ var AUDIO_MAP = {
   "Canard colvert": "audio/canard-colvert.mp3",
   "Vache domestique": "audio/vache-domestique.mp3",
   "Poule domestique": "audio/poule-domestique.mp3",
-  "Oie domestique": "audio/oie-domestique.mp3"
+  "Oie domestique": "audio/oie-domestique.mp3",
+  "Lapin européen": "audio/lapin-europeen.mp3",
+  "Lapin de Floride": "audio/lapin-de-floride.mp3",
+  "Lièvre d'Amérique": "audio/lievre-d-amerique.mp3",
+  "Lièvre arctique": "audio/lievre-arctique.mp3"
 };
