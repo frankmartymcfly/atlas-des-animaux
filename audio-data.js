@@ -1,4 +1,6 @@
-/* Voix Amélie (ElevenLabs) — un MP3 par animal. */
+/* Voix Amélie (ElevenLabs) — un MP3 par animal.
+   Deux générations, mêmes noms de fichiers :
+   audio/ = Nouvelle Amélie (modèle v3) · audio-v2/ = Amélie classique (modèle v2). */
 var AUDIO_MAP = {
   "Panda roux": "audio/panda-roux.mp3",
   "Manchot Adélie": "audio/manchot-adelie.mp3",

@@ -165,6 +165,9 @@
   .threat-chip { border-color: #dcc3b3; color: var(--terra-dark); }
   .threat-chip:hover { border-color: var(--terra); color: var(--terra-dark); }
   .threat-chip.active { background: var(--terra); border-color: var(--terra); color: #fff; }
+  .voice-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0 0; }
+  .voice-label { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; font-size: 13.5px; color: var(--forest); margin-right: 4px; }
+  .voice-label .icon { width: 15px; height: 15px; }
   .results-count { color: var(--muted); font-weight: 500; font-size: 13.5px; margin: 16px 0 0; letter-spacing: .01em; }
   .no-results { text-align: center; color: var(--muted); font-weight: 500; font-size: 18px; padding: 40px 16px 10px; }
 
@@ -405,6 +408,11 @@
       </div>
       <div class="filters" id="filters"></div>
       <button id="threatToggle" class="chip threat-chip" aria-pressed="false">Menacés seulement</button>
+    </div>
+    <div class="voice-row" role="group" aria-label="Choix de la voix">
+      <span class="voice-label"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.8 6a9 9 0 0 1 0 12"/></svg> Voix&nbsp;:</span>
+      <button id="voiceV2" class="chip voice-chip" aria-pressed="true">Amélie classique</button>
+      <button id="voiceV3" class="chip voice-chip" aria-pressed="false">Nouvelle Amélie</button>
     </div>
     <p class="results-count" id="resultsCount"></p>
   </section>
@@ -710,6 +718,43 @@ if (voiceSelect) {
 let currentCard = null;
 let currentAudio = null;   // pour les fichiers audio enregistrés
 
+/* Deux générations de la narration d'Amélie (ElevenLabs) :
+   « classique » (v2, dossier audio-v2/) et « nouvelle » (v3, dossier audio/). */
+const VOICE_STORAGE_KEY = 'atlas-voice-version';
+let voiceVersion = 'v2';
+try { voiceVersion = localStorage.getItem(VOICE_STORAGE_KEY) === 'v3' ? 'v3' : 'v2'; } catch (e) {}
+
+const voiceBtns = { v2: document.getElementById('voiceV2'), v3: document.getElementById('voiceV3') };
+
+function applyVoiceChoice() {
+  ['v2', 'v3'].forEach(v => {
+    const btn = voiceBtns[v];
+    if (!btn) return;
+    btn.classList.toggle('active', voiceVersion === v);
+    btn.setAttribute('aria-pressed', String(voiceVersion === v));
+  });
+}
+applyVoiceChoice();
+
+['v2', 'v3'].forEach(v => {
+  const btn = voiceBtns[v];
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    if (voiceVersion === v) return;
+    voiceVersion = v;
+    try { localStorage.setItem(VOICE_STORAGE_KEY, v); } catch (e) {}
+    stopEverything();   // changer de voix arrête la lecture en cours
+    applyVoiceChoice();
+  });
+});
+
+// Chemin du MP3 selon la génération choisie (les deux dossiers ont les mêmes noms de fichiers).
+function audioSrcFor(animal) {
+  const base = animal.audio || (typeof AUDIO_MAP !== 'undefined' ? AUDIO_MAP[animal.name] : null);
+  if (!base) return null;
+  return voiceVersion === 'v2' ? String(base).replace(/^audio\//, 'audio-v2/') : base;
+}
+
 // Icônes ligne (pas d'émoji) pour le bouton de lecture.
 const ICON_SPEAKER = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.8 6a9 9 0 0 1 0 12"/></svg>';
 const ICON_STOP = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>';
@@ -744,8 +789,8 @@ function readAnimal(animal, card) {
   btn.innerHTML = STOP_LABEL;
   currentCard = card;
 
-  // 1) Voix enregistrée (Amélie, ElevenLabs) : prioritaire si disponible.
-  const audioSrc = safeUrl(animal.audio || (typeof AUDIO_MAP !== 'undefined' ? AUDIO_MAP[animal.name] : null));
+  // 1) Voix enregistrée (Amélie, ElevenLabs — génération choisie) : prioritaire si disponible.
+  const audioSrc = safeUrl(audioSrcFor(animal));
   if (audioSrc) {
     const audio = new Audio(audioSrc);
     currentAudio = audio;                 // vitesse naturelle (pas de READ_RATE sur l'audio réel)
